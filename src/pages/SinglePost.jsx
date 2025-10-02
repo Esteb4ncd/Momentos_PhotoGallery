@@ -15,6 +15,12 @@ export default function SinglePost({ open, handleClose, post }) {
     { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
     { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
     { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+    { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+    { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
   ]
 
   return (
@@ -59,7 +65,7 @@ export default function SinglePost({ open, handleClose, post }) {
           <img
             src={post.imageUrl}
             alt={post.caption}
-            style={{ width: "100%", maxHeight: "20%", objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: "40vh" , objectFit: "cover", display: "block" }}
           />
         </Box>
 
