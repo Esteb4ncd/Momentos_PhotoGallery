@@ -16,16 +16,18 @@ export default function SinglePost({ open, handleClose, post }) {
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(post.likes || 0)
 
+  const [commentLikes, setCommentLikes] = useState({}) // track likes per comment
+
   const comments = [
-    { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
-    { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
-    { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
-    { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },   
-    { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
-    { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+    { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+    { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+    { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+    { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+    { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+    { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
   ]
 
   const handleLike = () => {
@@ -35,6 +37,13 @@ export default function SinglePost({ open, handleClose, post }) {
       setLikeCount(likeCount + 1)
     }
     setLiked(!liked)
+  }
+
+  const handleCommentLike = (id) => {
+    setCommentLikes((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
   }
 
   return (
@@ -126,13 +135,26 @@ export default function SinglePost({ open, handleClose, post }) {
             boxSizing: "border-box",
           }}
         >
-          {comments.map((comment, index) => (
-            <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
-              <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
-              <Box>
-                <Typography variant="subtitle2">{comment.username}</Typography>
-                <Typography variant="body2">{comment.text}</Typography>
+          {comments.map((comment) => (
+            <Box
+              key={comment.id}
+              sx={{ display: "flex", alignItems: "flex-start", mb: 2, justifyContent: "space-between" }}
+            >
+              <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+                <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
+                <Box>
+                  <Typography variant="subtitle2">{comment.username}</Typography>
+                  <Typography variant="body2">{comment.text}</Typography>
+                </Box>
               </Box>
+              {/* Mini Like Button */}
+              <IconButton
+                size="small"
+                onClick={() => handleCommentLike(comment.id)}
+                color={commentLikes[comment.id] ? "error" : "default"}
+              >
+                <FavoriteIcon fontSize="small" />
+              </IconButton>
             </Box>
           ))}
         </Box>
