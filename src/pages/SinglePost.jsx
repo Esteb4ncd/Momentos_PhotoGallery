@@ -4,12 +4,17 @@ import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
 import CloseIcon from "@mui/icons-material/Close"
+import FavoriteIcon from "@mui/icons-material/Favorite"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
+import { useState } from "react"
 
 export default function SinglePost({ open, handleClose, post }) {
   if (!post) return null
+
+  const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(post.likes || 0)
 
   const comments = [
     { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
@@ -17,17 +22,26 @@ export default function SinglePost({ open, handleClose, post }) {
     { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
     { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
     { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },   
     { username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
     { username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
     { username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
   ]
 
+  const handleLike = () => {
+    if (liked) {
+      setLikeCount(likeCount - 1)
+    } else {
+      setLikeCount(likeCount + 1)
+    }
+    setLiked(!liked)
+  }
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth={false} // allow custom width
+      maxWidth={false}
       PaperProps={{
         sx: {
           width: "60vw",
@@ -38,11 +52,10 @@ export default function SinglePost({ open, handleClose, post }) {
           flexDirection: "column",
           mx: "auto",
           boxSizing: "border-box",
-          overflowX: "hidden", // prevent horizontal scroll
+          overflowX: "hidden",
         },
       }}
     >
-      {/* Close button */}
       <IconButton
         onClick={handleClose}
         sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}
@@ -65,24 +78,38 @@ export default function SinglePost({ open, handleClose, post }) {
           <img
             src={post.imageUrl}
             alt={post.caption}
-            style={{ width: "100%", height: "40vh" , objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: "300px", objectFit: "cover", display: "block" }}
           />
         </Box>
 
         {/* Post Info */}
         <Box sx={{ width: "100%", p: 3, boxSizing: "border-box" }}>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
-            <Typography variant="h6">{post.username}</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-              {post.location}
-            </Typography>
+          {/* Username + Like Button Row */}
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
+              <Typography variant="h6">{post.username}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                {post.location}
+              </Typography>
+            </Box>
+            {/* Like Button */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+                <FavoriteIcon />
+              </IconButton>
+              <Typography sx={{ ml: 1 }}>
+                {likeCount} {likeCount === 1 ? "like" : "likes"}
+              </Typography>
+            </Box>
           </Box>
 
+          {/* Caption */}
           <Typography variant="body1" sx={{ mb: 1 }}>
             {post.caption}
           </Typography>
 
+          {/* Date */}
           <Typography variant="caption" color="text.secondary">
             {post.date}
           </Typography>
