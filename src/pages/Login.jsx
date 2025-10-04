@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, TextField } from '@mui/material';
+import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link } from '@mui/material';
 
 const Login = () => {
   return (
@@ -143,6 +143,53 @@ const Login = () => {
                 },
               }}
             />
+          </Box>
+          
+          {/* Remember Me and Forgot Password */}
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            mb: 4
+          }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    color: 'black',
+                    '&.Mui-checked': {
+                      color: 'black',
+                    },
+                    padding: '4px 8px 4px 0',
+                  }}
+                />
+              }
+              label={
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    color: 'black'
+                  }}
+                >
+                  REMEMBER ME
+                </Typography>
+              }
+            />
+            <Link
+              href="#"
+              sx={{
+                color: 'black',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                fontSize: '0.875rem',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              FORGOT PASSWORD?
+            </Link>
           </Box>
         </Box>
       </Box>
