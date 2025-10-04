@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link } from '@mui/material';
+import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button } from '@mui/material';
 
 const Login = () => {
   return (
@@ -191,6 +191,51 @@ const Login = () => {
               FORGOT PASSWORD?
             </Link>
           </Box>
+          
+          {/* Login Button */}
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              backgroundColor: '#f5f5f5',
+              color: 'black',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              py: 1.5,
+              mb: 3,
+              borderRadius: 0,
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: '#e0e0e0',
+              },
+            }}
+          >
+            LOGIN
+          </Button>
+          
+          {/* Sign Up Link */}
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'black',
+              textAlign: 'center'
+            }}
+          >
+            DONT HAVE AN ACCOUNT?{' '}
+            <Link
+              href="#"
+              sx={{
+                color: 'black',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              SIGN UP
+            </Link>
+          </Typography>
         </Box>
       </Box>
     </Box>
