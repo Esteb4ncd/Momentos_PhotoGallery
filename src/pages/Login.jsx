@@ -1,18 +1,32 @@
 import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Grid } from '@mui/material';
 
 const Login = () => {
   return (
-    <Container maxWidth="sm" sx={{ py: 8 }}>
-      <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Login
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
-          Welcome back to Momentos
-        </Typography>
+    <Box sx={{ minHeight: '100vh', display: 'flex' }}>
+      {/* Left Section - Branding */}
+      <Box sx={{ 
+        flex: '0 0 45%',
+        backgroundColor: '#f5f5f5',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {/* Branding content will go here */}
       </Box>
-    </Container>
+      
+      {/* Right Section - Login Form */}
+      <Box sx={{ 
+        flex: '0 0 55%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 4
+      }}>
+        {/* Login form content will go here */}
+      </Box>
+    </Box>
   );
 };
 
