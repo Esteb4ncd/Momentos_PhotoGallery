@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, TextField, InputAdornment } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, TextField, InputAdornment, Button } from '@mui/material';
+import { Search as SearchIcon, FilterList as FilterIcon } from '@mui/icons-material';
 import { samplePhotos } from '../data/samplePhotos';
 
 const Gallery = () => {
@@ -32,6 +32,20 @@ const Gallery = () => {
             ),
           }}
         />
+        
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<FilterIcon />}
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              px: 3
+            }}
+          >
+            Filter
+          </Button>
+        </Box>
       </Box>
       
       <Grid container spacing={3}>
