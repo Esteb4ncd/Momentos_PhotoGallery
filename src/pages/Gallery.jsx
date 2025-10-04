@@ -7,17 +7,23 @@ const Gallery = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Photo Gallery
+          Momentos Gallery
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          Explore our collection of beautiful moments
+          Connect with Photos
         </Typography>
       </Box>
       
       <Grid container spacing={3}>
         {samplePhotos.map((photo) => (
           <Grid item xs={12} sm={6} md={4} key={photo.id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Card 
+              sx={{ 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column'
+              }}
+            >
               <CardMedia
                 component="img"
                 height="200"
@@ -26,12 +32,17 @@ const Gallery = () => {
                 sx={{ objectFit: 'cover' }}
               />
               <CardContent sx={{ flexGrow: 1 }}>
-                <Typography gutterBottom variant="h6" component="h2">
-                  {photo.title}
+                <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium', mb: 1 }}>
+                  @{photo.username}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {photo.category}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {photo.date}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    📍 {photo.location}
+                  </Typography>
+                </Box>
               </CardContent>
             </Card>
           </Grid>

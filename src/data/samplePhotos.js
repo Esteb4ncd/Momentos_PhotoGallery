@@ -1,58 +1,66 @@
 export const samplePhotos = [
   {
     id: 1,
-    title: "Mountain Sunset",
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-    alt: "Beautiful mountain sunset with golden light",
-    category: "Nature"
+    src: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=600&fit=crop",
+    alt: "Adorable orange tabby cat sitting gracefully",
+    username: "sarahwang",
+    date: "2024-01-15",
+    location: "Banff, Alberta"
   },
   {
     id: 2,
-    title: "Ocean Waves",
-    src: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop",
-    alt: "Ocean waves crashing on rocky shore",
-    category: "Nature"
+    src: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=600&fit=crop",
+    alt: "Cute black and white cat looking at camera",
+    username: "estebancd",
+    date: "2024-01-12",
+    location: "Tofino, BC"
   },
   {
     id: 3,
-    title: "City Skyline",
-    src: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop",
-    alt: "Urban city skyline at twilight",
-    category: "Urban"
+    src: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=600&fit=crop",
+    alt: "Fluffy gray cat with beautiful green eyes",
+    username: "emmajarnie",
+    date: "2024-01-10",
+    location: "Vancouver, BC"
   },
   {
     id: 4,
-    title: "Forest Path",
-    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
-    alt: "Peaceful forest path with dappled sunlight",
-    category: "Nature"
+    src: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=600&fit=crop",
+    alt: "Sleepy brown tabby cat curled up",
+    username: "kaylaluo",
+    date: "2024-01-08",
+    location: "Whistler, BC"
   },
   {
     id: 5,
-    title: "Desert Dunes",
-    src: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&h=600&fit=crop",
-    alt: "Rolling sand dunes in the desert",
-    category: "Nature"
+    src: "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=800&h=600&fit=crop",
+    alt: "Playful white cat with blue eyes",
+    username: "sarahwang",
+    date: "2024-01-05",
+    location: "Death Valley, CA"
   },
   {
     id: 6,
-    title: "Street Art",
-    src: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&h=600&fit=crop",
-    alt: "Colorful street art mural",
-    category: "Urban"
+    src: "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=600&fit=crop",
+    alt: "Elegant Siamese cat with striking blue eyes",
+    username: "estebancd",
+    date: "2024-01-03",
+    location: "Gastown, Vancouver"
   },
   {
     id: 7,
-    title: "Lakeside Cabin",
-    src: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-    alt: "Cozy cabin by a serene lake",
-    category: "Nature"
+    src: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=600&fit=crop",
+    alt: "Adorable kitten playing with yarn",
+    username: "emmajarnie",
+    date: "2024-01-01",
+    location: "Okanagan Lake, BC"
   },
   {
     id: 8,
-    title: "Modern Architecture",
-    src: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
-    alt: "Contemporary building with glass facade",
-    category: "Urban"
+    src: "https://images.unsplash.com/photo-1517331156700-3c241d2b4d83?w=800&h=600&fit=crop",
+    alt: "Beautiful Persian cat with long fluffy fur",
+    username: "kaylaluo",
+    date: "2023-12-28",
+    location: "Downtown Vancouver"
   }
 ];
