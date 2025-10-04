@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardMedia, CardContent } from '@mui/material';
+import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, TextField, InputAdornment } from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
 import { samplePhotos } from '../data/samplePhotos';
 
 const Gallery = () => {
@@ -9,9 +10,28 @@ const Gallery = () => {
         <Typography variant="h3" component="h1" gutterBottom>
           Momentos Gallery
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
+        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
           Connect with Photos
         </Typography>
+        
+        <TextField
+          placeholder="Search photos..."
+          variant="outlined"
+          size="medium"
+          fullWidth
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2
+            }
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
       </Box>
       
       <Grid container spacing={3}>
