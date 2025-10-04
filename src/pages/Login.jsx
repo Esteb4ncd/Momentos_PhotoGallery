@@ -12,7 +12,31 @@ const Login = () => {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Branding content will go here */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'black',
+              fontSize: '3rem',
+              letterSpacing: '0.1em',
+              mb: 2
+            }}
+          >
+            MOMENTOS
+          </Typography>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'black',
+              letterSpacing: '0.05em'
+            }}
+          >
+            CONNECT WITH PHOTOS
+          </Typography>
+        </Box>
       </Box>
       
       {/* Right Section - Login Form */}
@@ -24,7 +48,31 @@ const Login = () => {
         justifyContent: 'center',
         padding: 4
       }}>
-        {/* Login form content will go here */}
+        <Box sx={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+          <Typography 
+            variant="h3" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'black',
+              fontSize: '2.5rem',
+              mb: 2
+            }}
+          >
+            LOGIN
+          </Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'black',
+              fontSize: '1.1rem',
+              mb: 4
+            }}
+          >
+            WELCOME BACK! PLEASE LOGIN TO YOUR ACCOUNT
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
