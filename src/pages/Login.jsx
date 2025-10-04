@@ -6,22 +6,24 @@ const Login = () => {
     <Box sx={{ minHeight: '100vh', display: 'flex' }}>
       {/* Left Section - Branding */}
       <Box sx={{ 
-        flex: '0 0 45%',
+        flex: '0 0 50%',
         backgroundColor: '#f5f5f5',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: '0 60px'
       }}>
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <Typography 
             variant="h2" 
             component="h1" 
             sx={{ 
               fontWeight: 'bold',
               color: 'black',
-              fontSize: '3rem',
-              letterSpacing: '0.1em',
-              mb: 2
+              fontSize: '3.5rem',
+              letterSpacing: '0.15em',
+              mb: 3,
+              lineHeight: 1.1
             }}
           >
             MOMENTOS
@@ -31,7 +33,8 @@ const Login = () => {
             sx={{ 
               fontWeight: 'bold',
               color: 'black',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.08em',
+              fontSize: '1.4rem'
             }}
           >
             CONNECT WITH PHOTOS
@@ -41,12 +44,12 @@ const Login = () => {
       
       {/* Right Section - Login Form */}
       <Box sx={{ 
-        flex: '0 0 55%',
+        flex: '0 0 50%',
         backgroundColor: 'white',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 4
+        padding: '0 60px'
       }}>
         <Box sx={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
           <Typography 
