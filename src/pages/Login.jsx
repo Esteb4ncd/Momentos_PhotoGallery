@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Box, Grid } from '@mui/material';
+import { Container, Typography, Box, Grid, TextField } from '@mui/material';
 
 const Login = () => {
   return (
@@ -72,6 +72,78 @@ const Login = () => {
           >
             WELCOME BACK! PLEASE LOGIN TO YOUR ACCOUNT
           </Typography>
+          
+          {/* Input Fields */}
+          <Box sx={{ textAlign: 'left', mb: 3 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                fontWeight: 'bold',
+                color: 'black',
+                mb: 1
+              }}
+            >
+              EMAIL/USERNAME
+            </Typography>
+            <TextField
+              fullWidth
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 0,
+                  border: '1px solid black',
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                  '&:hover fieldset': {
+                    border: 'none',
+                  },
+                  '&.Mui-focused fieldset': {
+                    border: 'none',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '12px 14px',
+                },
+              }}
+            />
+          </Box>
+          
+          <Box sx={{ textAlign: 'left', mb: 3 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                fontWeight: 'bold',
+                color: 'black',
+                mb: 1
+              }}
+            >
+              PASSWORD
+            </Typography>
+            <TextField
+              fullWidth
+              type="password"
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 0,
+                  border: '1px solid black',
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                  '&:hover fieldset': {
+                    border: 'none',
+                  },
+                  '&.Mui-focused fieldset': {
+                    border: 'none',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '12px 14px',
+                },
+              }}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
