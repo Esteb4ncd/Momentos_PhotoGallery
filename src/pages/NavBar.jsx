@@ -16,7 +16,12 @@ export default function NavBar() {
                 width: "100%", 
                 zIndex: 1000,
                 backgroundColor: "lightgray",
-                columnCount: 2,
+                display: "flex",           // Add this
+                flexDirection: "row",      // Add this
+                alignItems: "center",      // Vertically center children
+                justifyContent: "space-between", // Optional: space out logo and buttons
+                p: 0,
+                height: 72, 
             }}
         >
             {/* Left Side Box (Logo) */}
@@ -24,10 +29,18 @@ export default function NavBar() {
                 sx= {{ 
                 display: "fixed",
                 flexDirection: "column",
-                justifyContent: "flex-start",
+                justifyContent: "center",
+                alignItems: 'center',
                 p: 2,
             }}>
-                <Typography variant="h2">Mementos</Typography>
+                <Typography variant="h4"
+                sx={{
+                    fontWeight: 'bold',
+                    alignContent: 'center',
+                }}
+                >
+                    MOMENTOS
+                </Typography>
             </Box>
 
             {/* Right Side Box (Buttons) */}
@@ -46,7 +59,8 @@ export default function NavBar() {
                     aria-label="text button group" 
                     sx={{ '& .MuiButtonGroup-grouped:not(:last-of-type)': {
                     borderRight: '1px solid black',
-                    }
+                    backgroundColor: '3f3f3fff',
+                    },
                     }}
                 >
                     <Button 
@@ -68,7 +82,13 @@ export default function NavBar() {
                         }
                         }}
                     >
-                        <Typography variant="h5">Gallery</Typography>
+                        <Typography variant="h6"
+                            sx={{
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Gallery
+                        </Typography>
                     </Button>
                     <Button 
                         sx= {{
@@ -85,7 +105,13 @@ export default function NavBar() {
                         }
                         }}
                     >
-                        <Typography variant="h5">Upload</Typography>
+                        <Typography variant="h6"
+                            sx={{
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Upload
+                        </Typography>
                     </Button>
                     <Button 
                         sx= {{
@@ -102,7 +128,13 @@ export default function NavBar() {
                         }
                         }}
                     >
-                        <Typography variant="h5">Profiles</Typography>
+                        <Typography variant="h6"
+                            sx={{
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Profiles
+                        </Typography>
                     </Button>
                 </ButtonGroup>
             </Box>
