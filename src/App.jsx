@@ -12,7 +12,6 @@ export default function App() {
         <NavBar />
       </header>
       <main>
-        <UploadPost />
       </main>
     </div>
   )
