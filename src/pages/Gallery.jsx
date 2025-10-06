@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, TextField, InputAdornment, Button } from '@mui/material';
+import { Container, Typography, Box, Grid, TextField, InputAdornment, Button } from '@mui/material';
 import { Search as SearchIcon, FilterList as FilterIcon } from '@mui/icons-material';
 import { samplePhotos } from '../data/samplePhotos';
+import PhotoCard from '../components/PhotoCard';
 
 const Gallery = () => {
   return (
@@ -51,34 +52,7 @@ const Gallery = () => {
       <Grid container spacing={3}>
         {samplePhotos.map((photo) => (
           <Grid item xs={12} sm={6} md={4} key={photo.id}>
-            <Card 
-              sx={{ 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column'
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="200"
-                image={photo.src}
-                alt={photo.alt}
-                sx={{ objectFit: 'cover' }}
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium', mb: 1 }}>
-                  @{photo.username}
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {photo.date}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    📍 {photo.location}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
+            <PhotoCard photo={photo} />
           </Grid>
         ))}
       </Grid>
