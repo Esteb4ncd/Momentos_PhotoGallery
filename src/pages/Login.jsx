@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button } from '@mui/material';
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/gallery');
+  };
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex' }}>
       {/* Left Section - Branding */}
@@ -199,6 +206,7 @@ const Login = () => {
           <Button
             fullWidth
             variant="contained"
+            onClick={handleLogin}
             sx={{
               backgroundColor: '#f5f5f5',
               color: 'black',
