@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import UploadPost from '../pages/UploadPost';
+import UploadPost from './UploadPost';
 
 export default function UploadPostModal({ open, handleClose }) {
     return (
