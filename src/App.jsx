@@ -1,32 +1,44 @@
-import React from 'react'
-import './App.css'
+// import React from 'react'
+// import { ThemeProvider, createTheme } from '@mui/material/styles'
+// import './App.css'
+// import './pages/NavBar'
+// import ProfilePage from './pages/ProfilePage';
 
-import ProfilePage from './pages/ProfilePage';
-function App() {
-  return <ProfilePage />;
-}
-export default App;
+// function App() {
+//   return (
+//     <>
+//       <NavBar />
+//       <ProfilePage />
+//     </>
+//   )
+// }
+// export default App;
 
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { CssBaseline, Box } from '@mui/material'
-import Login from './pages/Login'
-import Gallery from './pages/Gallery'
-import './App.css'
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-})
+// const theme = createTheme({
+//   palette: {
+//     mode: 'light',
+//   },
+// })
 
-function App() {
+
+import { useState } from "react"
+import SinglePost from "./pages/SinglePost"
+import UploadPost from "./pages/UploadPost"
+import NavBar from "./pages/NavBar"
+import Gallery from "./pages/Gallery"
+
+export default function App() {
+
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ backgroundColor: 'white', minHeight: '100vh' }}>
-        <Login />
-        <Gallery />
-      </Box>
-    </ThemeProvider>
+    <div>
+      <header>
+        <NavBar />
+      </header>
+      <main>
+        <Gallery/>
+      </main>
+    </div>
   )
 }
