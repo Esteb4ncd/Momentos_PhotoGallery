@@ -11,6 +11,7 @@ import Button from "@mui/material/Button"
 import { useState } from "react"
 
 export default function SinglePost({ open, handleClose, post }) {
+
   if (!post) return null
 
   const [liked, setLiked] = useState(false)
