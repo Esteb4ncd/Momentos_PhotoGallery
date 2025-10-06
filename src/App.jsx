@@ -12,6 +12,7 @@ export default function App() {
         <NavBar />
       </header>
       <main>
+        
       </main>
     </div>
   )
