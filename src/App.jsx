@@ -1,4 +1,12 @@
 import React from 'react'
+import './App.css'
+
+import ProfilePage from './pages/ProfilePage';
+function App() {
+  return <ProfilePage />;
+}
+export default App;
+
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { CssBaseline, Box } from '@mui/material'
 import Login from './pages/Login'
