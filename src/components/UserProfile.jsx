@@ -1,152 +1,135 @@
 import React, { useState, useEffect } from "react";
 import {
-    Container,
-    Box,
-    Avatar,
-    Typography,
-    Button,
-    Card,
-    CardMedia,
+  Container,
+  Box,
+  Avatar,
+  Typography,
+  Card,
+  CardMedia,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { samplePhotos } from "../data/samplePhotos";
-
+import SinglePost from "./SinglePost"; // Import SinglePost
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const mockUsers = {
-    "sarahwang": {
-        username: "sarahwang",
-        bio: "Photography enthusiast capturing life's beautiful moments 📸",
-        joined: "January 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-        photos: samplePhotos.filter(photo => photo.username === "sarahwang")
-    },
-    "estebancd": {
-        username: "estebancd",
-        bio: "Adventure seeker and nature lover 🌲",
-        joined: "March 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/men/15.jpg",
-        photos: samplePhotos.filter(photo => photo.username === "estebancd")
-    },
-    "emmajarnie": {
-        username: "emmajarnie",
-        bio: "Artist and creative soul expressing through photography 🎨",
-        joined: "June 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
-        photos: samplePhotos.filter(photo => photo.username === "emmajarnie")
-    },
-    "kaylaluo": {
-        username: "kaylaluo",
-        bio: "Tech enthusiast and photography hobbyist 💻📷",
-        joined: "September 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
-        photos: samplePhotos.filter(photo => photo.username === "kaylaluo")
-    },
-    "sarah": {
-        username: "sarah",
-        bio: "Cat lover and amateur photographer 🐱",
-        joined: "February 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-        photos: []
-    },
-    "kayla": {
-        username: "kayla",
-        bio: "Travel blogger and sunset chaser 🌅",
-        joined: "April 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
-        photos: []
-    },
-    "emma": {
-        username: "emma",
-        bio: "Nature enthusiast and outdoor explorer 🌲",
-        joined: "May 2023",
-        pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg",
-        photos: []
-    }
+  "sarahwang": {
+    username: "sarahwang",
+    bio: "Photography enthusiast capturing life's beautiful moments 📸",
+    joined: "January 2023",
+    pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
+    photos: samplePhotos.filter(photo => photo.username === "sarahwang")
+  },
+  "estebancd": {
+    username: "estebancd",
+    bio: "Adventure seeker and nature lover 🌲",
+    joined: "March 2023",
+    pfpUrl: "https://randomuser.me/api/portraits/men/15.jpg",
+    photos: samplePhotos.filter(photo => photo.username === "estebancd")
+  },
+  "emmajarnie": {
+    username: "emmajarnie",
+    bio: "Artist and creative soul expressing through photography 🎨",
+    joined: "June 2023",
+    pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
+    photos: samplePhotos.filter(photo => photo.username === "emmajarnie")
+  },
+  "kaylaluo": {
+    username: "kaylaluo",
+    bio: "Tech enthusiast and photography hobbyist 💻📷",
+    joined: "September 2023",
+    pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
+    photos: samplePhotos.filter(photo => photo.username === "kaylaluo")
+  }
 };
 
-const UserProfile = ({ onEdit, onPhotoClick }) => {
-    const navigate = useNavigate();
-    const { username } = useParams();
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
+const UserProfile = () => {
+  const navigate = useNavigate();
+  const { username } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUserData = () => {
-            setLoading(true);
-            setTimeout(() => {
-                const user = mockUsers[username];
-                if (user) {
-                    setUserData(user);
-                } else {
-                    // User not found
-                    setUserData(null);
-                }
-                setLoading(false);
-            }, 500);
-        };
+  // Modal state
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [openPost, setOpenPost] = useState(false);
 
-        if (username) {
-            fetchUserData();
+  const handlePhotoClick = (photo) => {
+    setSelectedPost(photo);
+    setOpenPost(true);
+  };
+
+  const handleClosePost = () => {
+    setOpenPost(false);
+    setSelectedPost(null);
+  };
+
+  useEffect(() => {
+    const fetchUserData = () => {
+      setLoading(true);
+      setTimeout(() => {
+        const user = mockUsers[username];
+        if (user) {
+          setUserData(user);
+        } else {
+          setUserData(null);
         }
-    }, [username]);
+        setLoading(false);
+      }, 500);
+    };
 
-    if (loading) {
-        return (
-            <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
-                <Typography>Loading...</Typography>
-            </Container>
-        );
+    if (username) {
+      fetchUserData();
     }
+  }, [username]);
 
-    if (!userData) {
-        return (
-            <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
-        <Button
-            variant="outlined"
-            onClick={() => navigate(-1)}
-            sx={{ position: "absolute", left: 20, top: 20 }}
-        >
-            ← Back
-        </Button>
-                <Typography variant="h6">User not found</Typography>
-            </Container>
-        );
-    }
-
+  if (loading) {
     return (
-        <Container maxWidth="md" sx={{ textAlign: "center", mt: { xs: 8, md: 10 }, px: { xs: 2, sm: 3 } }}>
-        {/* Back Button */}
-        {/* <Button
-            variant="outlined"
-            onClick={() => navigate(-1)}
-            sx={{ position: "absolute", left: 20, top: 90 }}
-        >
-            ← Back
-        </Button> */}
+      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
+        <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
 
-        {/* Avatar + Username */}
-        <Avatar
-            alt="User Avatar"
-            src={userData.pfpUrl}
-            sx={{ width: { xs: 80, sm: 100, md: 120 }, height: { xs: 80, sm: 100, md: 120 }, margin: "0 auto", mb: 2 }}
-        />
-        <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: { xs: '1rem', sm: '1.15rem', md: '1.25rem' } }}>
-            {userData.username}
-        </Typography>
+  if (!userData) {
+    return (
+      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
+        <Typography variant="h6">User not found</Typography>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="md" sx={{ textAlign: "center", mt: 10 }}>
+      <Avatar
+        alt="User Avatar"
+        src={userData.pfpUrl}
+        sx={{ width: 120, height: 120, margin: "0 auto", mb: 2 }}
+      />
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        {userData.username}
+      </Typography>
 
         {/* Bio */}
         <Box
             sx={{
             border: "1px solid #c4c4c48e",
-            width: { xs: "90%", sm: "80%" },
+            width: "80%",
             margin: "16px auto",
             p: 2,
             borderRadius: 1,
             }}
         >
-            <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', md: '0.875rem' } }}>{userData.bio}</Typography>
+            <Typography variant="body2">{userData.bio}</Typography>
         </Box>
 
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 1, letterSpacing: 0.5 }}
+      >
+        JOINED {userData.joined} | {userData.photos.length} PHOTOS |{" "}
+        {userData.photos.reduce((acc, p) => acc + (p.likes || 0), 0)} LIKES
+      </Typography>
         {/* Stats */}
         <Typography
             variant="body2"
@@ -195,4 +178,4 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
     );
     };
 
-    export default UserProfile;
+export default UserProfile;

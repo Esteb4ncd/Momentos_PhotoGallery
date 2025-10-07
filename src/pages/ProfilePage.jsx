@@ -61,13 +61,19 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10}}>
-        <Avatar
-          alt="User Avatar"
-          sx={{ width: 120, height: 120, margin: "0 auto", mb: 2, bgcolor: "#ccc" }}
-        />
+      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10, mb: 4}}>
+      <Avatar
+  alt="User Avatar"
+  src="https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg"
+  sx={{
+    width: 120,
+    height: 120,
+    margin: "0 auto",
+    mb: 2,
+  }}
+/>
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          CEO OF MOMENTOS
+          Yo Mama
         </Typography>
 
         <Box
@@ -79,7 +85,7 @@ const ProfilePage = () => {
             borderRadius: 1,
           }}
         >
-          <Typography variant="body2">SHORT BIO</Typography>
+          <Typography variant="body2">Proud dog lover </Typography>
         </Box>
 
         <Typography
