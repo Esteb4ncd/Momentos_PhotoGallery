@@ -114,15 +114,15 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
     }
 
     return (
-        <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
+        <Container maxWidth="md" sx={{ textAlign: "center", mt: 10 }}>
         {/* Back Button */}
-        <Button
+        {/* <Button
             variant="outlined"
             onClick={() => navigate(-1)}
-            sx={{ position: "absolute", left: 20, top: 20 }}
+            sx={{ position: "absolute", left: 20, top: 90 }}
         >
             ← Back
-        </Button>
+        </Button> */}
 
         {/* Avatar + Username */}
         <Avatar
