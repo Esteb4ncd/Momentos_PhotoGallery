@@ -14,6 +14,9 @@ import './App.css';
 const theme = createTheme({
   palette: {
     mode: 'light',
+    primary: {
+      main: '#4f40b4',
+    },
   },
 });
 

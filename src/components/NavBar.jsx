@@ -2,22 +2,37 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
+import { Button, IconButton, Menu, MenuItem } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import MenuIcon from '@mui/icons-material/Menu';
 import UploadPostModal from './UploadPostModal';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 // Upload Post Modal Stuff:
     const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     
-    const handleGalleryClick = () => navigate('/gallery');
-    const handleProfileClick = () => navigate('/profilepage');
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
+    
+    const handleGalleryClick = () => {
+        navigate('/gallery');
+        handleMenuClose();
+    };
+    const handleProfileClick = () => {
+        navigate('/profilepage');
+        handleMenuClose();
+    };
+    const handleUploadClick = () => {
+        handleOpen();
+        handleMenuClose();
+    };
 
     return ( 
     
@@ -58,10 +73,49 @@ export default function NavBar() {
                     </Typography>
                 </Box>
 
-                {/* Right Side Box (Buttons) */}
+                {/* Hamburger Menu for Mobile/Tablet */}
+                <Box
+                    sx={{
+                        display: { xs: 'flex', md: 'none' },
+                        alignItems: 'center',
+                        p: 2,
+                    }}
+                >
+                    <IconButton
+                        onClick={handleMenuOpen}
+                        sx={{
+                            color: '#4f40b4',
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        sx={{
+                            '& .MuiPaper-root': {
+                                backgroundColor: 'white',
+                                minWidth: '150px',
+                            }
+                        }}
+                    >
+                        <MenuItem onClick={handleGalleryClick}>
+                            <Typography sx={{ color: '#4f40b4' }}>Gallery</Typography>
+                        </MenuItem>
+                        <MenuItem onClick={handleUploadClick}>
+                            <Typography sx={{ color: '#4f40b4' }}>Upload</Typography>
+                        </MenuItem>
+                        <MenuItem onClick={handleProfileClick}>
+                            <Typography sx={{ color: '#4f40b4' }}>Profile</Typography>
+                        </MenuItem>
+                    </Menu>
+                </Box>
+
+                {/* Right Side Box (Buttons) - Desktop Only */}
                 <Box
                     sx={{ 
-                        display: "flex",
+                        display: { xs: 'none', md: 'flex' },
                         flexDirection: "row",
                         justifyContent: "flex-end",
                         alignItems: "center",

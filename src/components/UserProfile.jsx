@@ -114,7 +114,7 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
     }
 
     return (
-        <Container maxWidth="md" sx={{ textAlign: "center", mt: 10 }}>
+        <Container maxWidth="md" sx={{ textAlign: "center", mt: { xs: 8, md: 10 }, px: { xs: 2, sm: 3 } }}>
         {/* Back Button */}
         {/* <Button
             variant="outlined"
@@ -128,9 +128,9 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
         <Avatar
             alt="User Avatar"
             src={userData.pfpUrl}
-            sx={{ width: 120, height: 120, margin: "0 auto", mb: 2 }}
+            sx={{ width: { xs: 80, sm: 100, md: 120 }, height: { xs: 80, sm: 100, md: 120 }, margin: "0 auto", mb: 2 }}
         />
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: { xs: '1rem', sm: '1.15rem', md: '1.25rem' } }}>
             {userData.username}
         </Typography>
 
@@ -138,20 +138,20 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
         <Box
             sx={{
             border: "1px solid #c4c4c48e",
-            width: "80%",
+            width: { xs: "90%", sm: "80%" },
             margin: "16px auto",
             p: 2,
             borderRadius: 1,
             }}
         >
-            <Typography variant="body2">{userData.bio}</Typography>
+            <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', md: '0.875rem' } }}>{userData.bio}</Typography>
         </Box>
 
         {/* Stats */}
         <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ mt: 1, letterSpacing: 0.5 }}
+            sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' } }}
         >
             JOINED {userData.joined} | {userData.photos.length} PHOTOS |{" "}
             {userData.photos.reduce((acc, p) => acc + (p.likes || 0), 0)} LIKES
@@ -163,8 +163,10 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
+            alignItems: "center",
             mt: 4,
             gap: 2,
+            mx: "auto",
             }}
         >
             {userData.photos.map((photo) => (
@@ -172,8 +174,8 @@ const UserProfile = ({ onEdit, onPhotoClick }) => {
                 key={photo.id}
                 sx={{
                 position: "relative",
-                width: 200,
-                height: 200,
+                width: { xs: 150, sm: 180, md: 200 },
+                height: { xs: 150, sm: 180, md: 200 },
                 cursor: "pointer",
                 }}
                 onClick={() => onPhotoClick && onPhotoClick(photo)}

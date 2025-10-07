@@ -41,10 +41,11 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
       onClose={handleClose}
       maxWidth="md"
       fullWidth
+      fullScreen={{ xs: true, sm: true, md: false }}
       PaperProps={{
         sx: {
-          borderRadius: 3,
-          maxHeight: "90vh",
+          borderRadius: { xs: 0, sm: 0, md: 3 },
+          maxHeight: { xs: "100vh", sm: "100vh", md: "90vh" },
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -60,11 +61,12 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
         <Button
           variant="outlined"
           size="small"
+          color="primary"
           onClick={onEdit}
           sx={{
-            color: "primary.main",
-            borderColor: "primary.main",
-            "&:hover": { backgroundColor: "#f0f0f0", borderColor: "primary.main" },
+            "&:hover": { backgroundColor: "rgba(79, 64, 180, 0.1)" },
+            fontSize: { xs: '0.7rem', md: '0.875rem' },
+            px: { xs: 1, md: 2 }
           }}
         >
           Edit
@@ -74,10 +76,10 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
       <DialogContent
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: { xs: "column-reverse", md: "row" },
           p: 0,
           width: "100%",
-          height: "70vh",
+          height: { xs: "100vh", md: "70vh" },
         }}
       >
         {/* Left Side: Info + Comments */}
@@ -159,8 +161,8 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
             <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
             <Button
               variant="contained"
+              color="primary"
               sx={{
-                bgcolor: "#4F4DB4",
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
               }}

@@ -105,6 +105,7 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
             onChange={(e) => setCaption(e.target.value)}
             multiline
             rows={3}
+            color="primary"
             sx={{ mb: 2 }}
           />
 
@@ -113,6 +114,7 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
             label="Location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            color="primary"
             sx={{ mb: 2 }}
           />
 
@@ -124,12 +126,12 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
           {/* Save Button */}
           <Button
             variant="contained"
+            color="primary"
             onClick={handleSave}
             sx={{
                 position: "absolute",
                 bottom: 20,
                 width: "48%",
-              backgroundColor: "#4F4DB4",
               color: "#fff",
               "&:hover": { backgroundColor: "#3f3da0" },
             }}

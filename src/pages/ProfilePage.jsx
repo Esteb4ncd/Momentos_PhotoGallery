@@ -73,7 +73,7 @@ const ProfilePage = () => {
         <Box
           sx={{
             border: "1px solid #c4c4c48e",
-            width: "80%",
+            width: { xs: "90%", sm: "80%" },
             margin: "16px auto",
             p: 2,
             borderRadius: 1,
@@ -85,25 +85,32 @@ const ProfilePage = () => {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ mt: 1, letterSpacing: 0.5 }}
+          sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
         >
           JOINED SEPT 2025 | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
         </Typography>
 
-        {/* Fixed 3x3 Photo Grid */}
+        {/* Responsive Photo Grid */}
         <Box
           sx={{
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
+            alignItems: "center",
             mt: 4,
             gap: 2,
+            mx: "auto",
           }}
         >
           {photos.map((photo) => (
             <Box
               key={photo.id}
-              sx={{ position: "relative", width: 200, height: 200, cursor: "pointer" }}
+              sx={{ 
+                position: "relative", 
+                width: { xs: 150, sm: 180, md: 200 }, 
+                height: { xs: 150, sm: 180, md: 200 }, 
+                cursor: "pointer" 
+              }}
               onClick={() => handleOpenPost(photo)}
             >
               <Card sx={{ width: "100%", height: "100%", position: "relative" }}>

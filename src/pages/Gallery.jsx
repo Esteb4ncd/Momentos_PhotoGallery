@@ -59,7 +59,7 @@ const Gallery = () => {
         </Box>
       </Box>
       
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent="center">
         {samplePhotos.map((photo) => (
           <Grid item xs={12} sm={6} md={4} key={photo.id}>
             <PhotoCard photo={photo} />

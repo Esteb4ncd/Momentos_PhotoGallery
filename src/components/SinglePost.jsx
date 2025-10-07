@@ -44,12 +44,13 @@ export default function SinglePost({ open, handleClose, post }) {
       open={open}
       onClose={handleClose}
       maxWidth={false}
+      fullScreen={{ xs: true, sm: true, md: false }}
       PaperProps={{
         sx: {
-          width: "80vw",
-          maxWidth: "1000px",
-          borderRadius: 3,
-          maxHeight: "90vh",
+          width: { xs: "100%", sm: "100%", md: "80vw" },
+          maxWidth: { xs: "100%", sm: "100%", md: "1000px" },
+          borderRadius: { xs: 0, sm: 0, md: 3 },
+          maxHeight: { xs: "100vh", sm: "100vh", md: "90vh" },
           display: "flex",
           flexDirection: "column",
           mx: "auto",
@@ -66,7 +67,7 @@ export default function SinglePost({ open, handleClose, post }) {
             handleClose();
           }
         }} 
-        sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}
+        sx={{ position: "absolute", top: 16, right: 16, zIndex: 1, color: "white" }}
       >
         <CloseIcon />
       </IconButton>
@@ -74,12 +75,12 @@ export default function SinglePost({ open, handleClose, post }) {
       <DialogContent
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: { xs: "column-reverse", md: "row" },
           p: 0,
           boxSizing: "border-box",
           overflow: "hidden",
           width: "100%",
-          height: "70vh",
+          height: { xs: "100vh", md: "70vh" },
         }}
       >
         {/* Left Side: Info + Comments */}
@@ -88,23 +89,23 @@ export default function SinglePost({ open, handleClose, post }) {
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            p: 3,
+            p: { xs: 2, sm: 2.5, md: 3 },
             overflowY: "auto",
             bgcolor: "background.paper",
           }}
         >
           {/* Username + Like */}
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+              <Avatar src={post.pfpUrl} sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }} />
               <Typography 
                 variant="h6" 
-                sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" }, fontSize: { xs: '1rem', md: '1.25rem' } }}
                 onClick={() => handleUsernameClick(post.username)}
               >
                 {post.username}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 1, fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                 {post.location}
               </Typography>
             </Box>
@@ -119,10 +120,10 @@ export default function SinglePost({ open, handleClose, post }) {
           </Box>
 
           {/* Caption */}
-          <Typography variant="body1" sx={{ mb: 2 }}>{post.caption}</Typography>
+          <Typography variant="body1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>{post.caption}</Typography>
 
           {/* Date */}
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 2 }}>{post.date}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 2, fontSize: { xs: '0.7rem', md: '0.75rem' } }}>{post.date}</Typography>
 
           {/* Comments */}
           <Box sx={{ flex: 1, overflowY: "auto" }}>
@@ -132,16 +133,16 @@ export default function SinglePost({ open, handleClose, post }) {
                 sx={{ display: "flex", alignItems: "flex-start", mb: 2, justifyContent: "space-between" }}
               >
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-                  <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
+                  <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: { xs: 24, md: 30 }, height: { xs: 24, md: 30 } }} />
                   <Box>
                     <Typography 
                       variant="subtitle2" 
-                      sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                      sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" }, fontSize: { xs: '0.8rem', md: '0.875rem' } }}
                       onClick={() => handleUsernameClick(comment.username.toLowerCase())}
                     >
                       {comment.username}
                     </Typography>
-                    <Typography variant="body2">{comment.text}</Typography>
+                    <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{comment.text}</Typography>
                   </Box>
                 </Box>
                 <IconButton size="small" onClick={() => handleCommentLike(comment.id)} color={commentLikes[comment.id] ? "error" : "default"}>
@@ -153,12 +154,26 @@ export default function SinglePost({ open, handleClose, post }) {
 
           {/* Add Comment Input */}
           <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
-            <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
-            <Button sx={{
-                bgcolor: "#4F4DB4",
+            <TextField 
+              variant="outlined" 
+              size="small" 
+              placeholder="Add a comment..." 
+              fullWidth 
+              sx={{
+                '& .MuiInputBase-input': {
+                  fontSize: { xs: '0.8rem', md: '0.875rem' }
+                }
+              }}
+            />
+            <Button 
+              variant="contained"
+              color="primary"
+              sx={{
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
-              }} variant="contained">Post</Button>
+                fontSize: { xs: '0.75rem', md: '0.875rem' },
+                px: { xs: 2, md: 3 }
+              }}>Post</Button>
           </Box>
         </Box>
 
@@ -171,12 +186,13 @@ export default function SinglePost({ open, handleClose, post }) {
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
+            minHeight: { xs: "40vh", md: "auto" },
           }}
         >
           <img
             src={post.imageUrl || post.src}
             alt={post.caption}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
           />
         </Box>
       </DialogContent>

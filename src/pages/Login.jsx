@@ -10,10 +10,10 @@ const Login = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {/* Left Section - Branding */}
       <Box sx={{ 
-        flex: '0 0 50%',
+        flex: { xs: '0 0 30%', md: '0 0 50%' },
         backgroundImage: 'url(/momentos_loginpic2.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'left center',
@@ -21,7 +21,7 @@ const Login = () => {
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: '120px 60px 0 60px'
+        padding: { xs: '40px 20px 20px 20px', md: '120px 60px 0 60px' }
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <Typography 
@@ -30,9 +30,9 @@ const Login = () => {
             sx={{ 
               fontWeight: 'bold',
               color: 'white',
-              fontSize: '3.5rem',
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
               letterSpacing: '0.05em',
-              mb: 3,
+              mb: { xs: 1, md: 3 },
               lineHeight: 1.1
             }}
           >
@@ -44,7 +44,7 @@ const Login = () => {
               fontWeight: 'bold',
               color: 'white',
               letterSpacing: '0.08em',
-              fontSize: '1.4rem'
+              fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' }
             }}
           >
             Connect with Photos
@@ -54,12 +54,12 @@ const Login = () => {
       
       {/* Right Section - Login Form */}
       <Box sx={{ 
-        flex: '0 0 50%',
+        flex: { xs: '1 1 auto', md: '0 0 50%' },
         backgroundColor: 'white',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '0 60px'
+        padding: { xs: '40px 20px', sm: '40px 40px', md: '0 60px' }
       }}>
         <Box sx={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
           <Typography 
@@ -68,7 +68,7 @@ const Login = () => {
             sx={{ 
               fontWeight: 'bold',
               color: 'black',
-              fontSize: '2.5rem',
+              fontSize: { xs: '2rem', sm: '2.2rem', md: '2.5rem' },
               mb: 2
             }}
           >
@@ -79,7 +79,7 @@ const Login = () => {
             sx={{ 
               fontWeight: 'bold',
               color: 'black',
-              fontSize: '1.1rem',
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
               mb: 4
             }}
           >
@@ -209,9 +209,9 @@ const Login = () => {
           <Button
             fullWidth
             variant="contained"
+            color="primary"
             onClick={handleLogin}
             sx={{
-              backgroundColor: '#4f40b4',
               color: 'white',
               fontWeight: 'bold',
               fontSize: '1rem',
