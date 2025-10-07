@@ -36,17 +36,18 @@
 
 // export default PhotoCard;
 import React from 'react';
-import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
+import { Card, CardMedia, Typography, Box } from '@mui/material';
 
 const PhotoCard = ({ photo }) => {
   return (
     <Card 
       sx={{ 
         height: '100%', 
-        display: 'flex', 
-        flexDirection: 'column',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-        "&:hover": { transform: "scale(1.02)", boxShadow: 4 },
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover .photo-info': {
+          opacity: 1,
+        }
       }}
     >
       <CardMedia
@@ -54,21 +55,41 @@ const PhotoCard = ({ photo }) => {
         height="200"
         image={photo.src}
         alt={photo.alt}
-        sx={{ objectFit: 'cover' }}
+        sx={{ 
+          objectFit: 'cover'
+        }}
       />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium', mb: 1 }}>
+      
+      {/* Hover overlay with photo information */}
+      <Box 
+        className="photo-info"
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+          color: 'white',
+          padding: 2,
+          opacity: 0,
+          transition: 'opacity 0.3s ease-in-out',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5
+        }}
+      >
+        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
           @{photo.username}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
             {photo.date}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
             📍 {photo.location}
           </Typography>
         </Box>
-      </CardContent>
+      </Box>
     </Card>
   );
 };
