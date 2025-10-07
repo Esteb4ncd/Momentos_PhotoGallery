@@ -35,16 +35,31 @@
 // };
 
 // export default PhotoCard;
-import React from 'react';
-import { Card, CardMedia, Typography, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardMedia, Typography, Box, Dialog, DialogContent } from '@mui/material';
+import SinglePost from './SinglePost';
 
 const PhotoCard = ({ photo }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleClick = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    console.log('Closing modal - handleCloseModal called');
+    setModalOpen(false);
+    console.log('Modal should now be closed');
+  };
+
   return (
     <Card 
+      onClick={handleClick}
       sx={{ 
         height: '100%', 
         position: 'relative',
         overflow: 'hidden',
+        cursor: 'pointer',
         '&:hover .photo-info': {
           opacity: 1,
         }
@@ -90,6 +105,25 @@ const PhotoCard = ({ photo }) => {
           </Typography>
         </Box>
       </Box>
+
+      {/* SinglePost Modal */}
+      <Dialog
+        open={modalOpen}
+        onClose={handleCloseModal}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <DialogContent sx={{ padding: 0 }}>
+          {modalOpen && <SinglePost post={photo} open={true} handleClose={handleCloseModal} />}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

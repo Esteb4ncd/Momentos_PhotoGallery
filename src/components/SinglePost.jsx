@@ -51,7 +51,16 @@ export default function SinglePost({ open, handleClose, post }) {
         },
       }}
     >
-      <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
+      <IconButton 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (handleClose) {
+            handleClose();
+          }
+        }} 
+        sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}
+      >
         <CloseIcon />
       </IconButton>
 
