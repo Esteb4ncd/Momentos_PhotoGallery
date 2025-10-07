@@ -24,20 +24,17 @@ const Login = () => {
         padding: { xs: '40px 20px 20px 20px', md: '120px 60px 0 60px' }
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
-          <Typography 
-            variant="h2" 
-            component="h1" 
-            sx={{ 
-              fontWeight: 'bold',
-              color: 'white',
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
-              letterSpacing: '0.05em',
-              mb: { xs: 1, md: 3 },
-              lineHeight: 1.1
+          <img 
+            src="/Momentos_Wordmark.svg" 
+            alt="Momentos" 
+            style={{ 
+              height: 'auto',
+              width: '100%',
+              maxWidth: '350px',
+              filter: 'brightness(0) invert(1)',
+              marginBottom: '16px'
             }}
-          >
-            MOMENTOS
-          </Typography>
+          />
           <Typography 
             variant="h5" 
             sx={{ 
