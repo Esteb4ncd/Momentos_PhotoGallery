@@ -37,8 +37,15 @@
 // export default PhotoCard;
 import React from 'react';
 import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const PhotoCard = ({ photo }) => {
+  const navigate = useNavigate();
+
+  const handleUsernameClick = (username) => {
+    navigate(`/user/${username}`);
+  };
+
   return (
     <Card 
       sx={{ 
@@ -57,7 +64,17 @@ const PhotoCard = ({ photo }) => {
         sx={{ objectFit: 'cover' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium', mb: 1 }}>
+        <Typography 
+          variant="body2" 
+          color="text.primary" 
+          sx={{ 
+            fontWeight: 'medium', 
+            mb: 1, 
+            cursor: 'pointer',
+            '&:hover': { textDecoration: 'underline' }
+          }}
+          onClick={() => handleUsernameClick(photo.username)}
+        >
           @{photo.username}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>

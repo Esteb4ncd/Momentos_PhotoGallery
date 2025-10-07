@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Gallery from './pages/Gallery';
 import NavBar from './components/NavBar';
 import ProfilePage from "./pages/ProfilePage";
+import UserProfile from './components/UserProfile';
 
 import './App.css';
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/profilepage" element={<ProfilePage />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/user/:username" element={<UserProfile />} />
           </Routes>
         </Router>
       </Box>

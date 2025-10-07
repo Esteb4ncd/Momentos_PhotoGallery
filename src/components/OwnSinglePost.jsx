@@ -9,13 +9,20 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
   if (!post) return null;
 
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentLikes, setCommentLikes] = useState({});
+
+  const handleUsernameClick = (username) => {
+    navigate(`/user/${username}`);
+    handleClose(); // Close the modal when navigating
+  };
 
   const comments = post.comments || [];
 
@@ -88,7 +95,13 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
-              <Typography variant="h6">{post.username}</Typography>
+              <Typography 
+                variant="h6" 
+                sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                onClick={() => handleUsernameClick(post.username)}
+              >
+                {post.username}
+              </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                 {post.location}
               </Typography>
@@ -120,7 +133,13 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
                   <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
                   <Box>
-                    <Typography variant="subtitle2">{comment.username}</Typography>
+                    <Typography 
+                      variant="subtitle2" 
+                      sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                      onClick={() => handleUsernameClick(comment.username.toLowerCase())}
+                    >
+                      {comment.username}
+                    </Typography>
                     <Typography variant="body2">{comment.text}</Typography>
                   </Box>
                 </Box>
