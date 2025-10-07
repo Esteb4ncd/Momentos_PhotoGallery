@@ -36,7 +36,7 @@
 
 // export default PhotoCard;
 import React, { useState } from 'react';
-import { Card, CardMedia, Typography, Box, Dialog, DialogContent } from '@mui/material';
+import { Card, CardMedia, Typography, Box } from '@mui/material';
 import SinglePost from './SinglePost';
 
 const PhotoCard = ({ photo }) => {
@@ -47,84 +47,68 @@ const PhotoCard = ({ photo }) => {
   };
 
   const handleCloseModal = () => {
-    console.log('Closing modal - handleCloseModal called');
     setModalOpen(false);
-    console.log('Modal should now be closed');
   };
 
   return (
-    <Card 
-      onClick={handleClick}
-      sx={{ 
-        height: '100%', 
-        position: 'relative',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        '&:hover .photo-info': {
-          opacity: 1,
-        }
-      }}
-    >
-      <CardMedia
-        component="img"
-        height="200"
-        image={photo.src}
-        alt={photo.alt}
+    <>
+      <Card 
+        onClick={handleClick}
         sx={{ 
-          objectFit: 'cover'
-        }}
-      />
-      
-      {/* Hover overlay with photo information */}
-      <Box 
-        className="photo-info"
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
-          color: 'white',
-          padding: 2,
-          opacity: 0,
-          transition: 'opacity 0.3s ease-in-out',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 0.5
-        }}
-      >
-        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-          @{photo.username}
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
-            {photo.date}
-          </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
-            📍 {photo.location}
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* SinglePost Modal */}
-      <Dialog
-        open={modalOpen}
-        onClose={handleCloseModal}
-        maxWidth="lg"
-        fullWidth
-        PaperProps={{
-          sx: {
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            maxHeight: '90vh'
+          height: '100%', 
+          position: 'relative',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          '&:hover .photo-info': {
+            opacity: 1,
           }
         }}
       >
-        <DialogContent sx={{ padding: 0 }}>
-          {modalOpen && <SinglePost post={photo} open={true} handleClose={handleCloseModal} />}
-        </DialogContent>
-      </Dialog>
-    </Card>
+        <CardMedia
+          component="img"
+          height="200"
+          image={photo.src}
+          alt={photo.alt}
+          sx={{ 
+            objectFit: 'cover'
+          }}
+        />
+        
+        {/* Hover overlay with photo information */}
+        <Box 
+          className="photo-info"
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+            color: 'white',
+            padding: 2,
+            opacity: 0,
+            transition: 'opacity 0.3s ease-in-out',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.5
+          }}
+        >
+          <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+            @{photo.username}
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              {photo.date}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              📍 {photo.location}
+            </Typography>
+          </Box>
+        </Box>
+      </Card>
+
+      {/* SinglePost Modal */}
+      <SinglePost post={photo} open={modalOpen} handleClose={handleCloseModal} />
+    </>
   );
 };
 
