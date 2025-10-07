@@ -61,7 +61,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 }}>
+      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10}}>
         <Avatar
           alt="User Avatar"
           sx={{ width: 120, height: 120, margin: "0 auto", mb: 2, bgcolor: "#ccc" }}

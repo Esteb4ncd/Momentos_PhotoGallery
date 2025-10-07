@@ -5,13 +5,19 @@ import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import UploadPostModal from './UploadPostModal';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 // Upload Post Modal Stuff:
     const [open, setOpen] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    
+    const handleGalleryClick = () => navigate('/gallery');
+    const handleProfileClick = () => navigate('/profilepage');
 
     return ( 
     
@@ -23,7 +29,7 @@ export default function NavBar() {
                     left: 0,
                     width: "100%", 
                     zIndex: 1000,
-                    backgroundColor: "lightgray",
+                    backgroundColor: "white",
                     display: "flex",           // Add this
                     flexDirection: "row",      // Add this
                     alignItems: "center",      // Vertically center children
@@ -45,6 +51,7 @@ export default function NavBar() {
                     sx={{
                         fontWeight: 'bold',
                         alignContent: 'center',
+                        color: '#4f40b4',
                     }}
                     >
                         MOMENTOS
@@ -84,18 +91,22 @@ export default function NavBar() {
                     >
                         {/* Gallery Button */}
                         <Button 
+                            onClick={handleGalleryClick}
                             sx= {{
                                 flexDirection: "column",
                                 justifyContent: "flex-end",
                                 alignItems: "center",
-                            p: 2,
-                            color: "text.primary",
+                            p: 1,
+                            color: "#4f40b4",
 
                             '&:hover': {
-                                backgroundColor: '#3f3f3fff',
+                                backgroundColor: 'rgba(79, 64, 180, 0.8)',
                                 color: 'white',
                                 pointer: 'pointer',
-                                border: '1px solid black',
+                                borderRadius: '6px',
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             },
                             '&:active': {
                                 border: '1px solid black',
@@ -104,7 +115,7 @@ export default function NavBar() {
                         >
                             <Typography variant="h6"
                                 sx={{
-                                    fontWeight: 'bold',
+                                    fontWeight: 'normal',
                                 }}
                             >
                                 Gallery
@@ -118,18 +129,22 @@ export default function NavBar() {
                             flexDirection: "column",
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            p: 2,
-                            color: "text.primary",
+                            p: 1,
+                            color: "#4f40b4",
                             '&:hover': {
-                                backgroundColor: '#3f3f3fff',
+                                backgroundColor: 'rgba(79, 64, 180, 0.8)',
                                 color: 'white',
-                                pointer: 'pointer'
+                                pointer: 'pointer',
+                                borderRadius: '6px'
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             }
                             }}
                         >
                             <Typography variant="h6"
                                 sx={{
-                                    fontWeight: 'bold',
+                                    fontWeight: 'normal',
                                 }}
                             >
                                 Upload
@@ -138,23 +153,28 @@ export default function NavBar() {
 
                         {/* Profile */}
                         <Button 
+                            onClick={handleProfileClick}
                             sx= {{
                             display: "fixed",
                             flexDirection: "column",
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            p: 2,
-                            color: "text.primary",
+                            p: 1,
+                            color: "#4f40b4",
                             '&:hover': {
-                                backgroundColor: '#3f3f3fff',
+                                backgroundColor: 'rgba(79, 64, 180, 0.8)',
                                 color: 'white',
-                                pointer: 'pointer'
+                                pointer: 'pointer',
+                                borderRadius: '6px'
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             }
                             }}
                         >
                             <Typography variant="h6"
                                 sx={{
-                                    fontWeight: 'bold',
+                                    fontWeight: 'normal',
                                 }}
                             >
                                 Profile
