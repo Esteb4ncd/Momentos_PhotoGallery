@@ -36,19 +36,31 @@ export default function SinglePost({ open, handleClose, post }) {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="md"
-      fullWidth
+      maxWidth={false}
       PaperProps={{
         sx: {
+          width: "80vw",
+          maxWidth: "1000px",
           borderRadius: 3,
           maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
+          mx: "auto",
+          boxSizing: "border-box",
           overflow: "hidden",
         },
       }}
     >
-      <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
+      <IconButton 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (handleClose) {
+            handleClose();
+          }
+        }} 
+        sx={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}
+      >
         <CloseIcon />
       </IconButton>
 
@@ -57,8 +69,10 @@ export default function SinglePost({ open, handleClose, post }) {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           p: 0,
-          height: "70vh",
+          boxSizing: "border-box",
           overflow: "hidden",
+          width: "100%",
+          height: "70vh",
         }}
       >
         {/* Left Side: Info + Comments */}
@@ -111,11 +125,7 @@ export default function SinglePost({ open, handleClose, post }) {
                     <Typography variant="body2">{comment.text}</Typography>
                   </Box>
                 </Box>
-                <IconButton
-                  size="small"
-                  onClick={() => handleCommentLike(comment.id)}
-                  color={commentLikes[comment.id] ? "error" : "default"}
-                >
+                <IconButton size="small" onClick={() => handleCommentLike(comment.id)} color={commentLikes[comment.id] ? "error" : "default"}>
                   <FavoriteIcon fontSize="small" />
                 </IconButton>
               </Box>
@@ -125,16 +135,11 @@ export default function SinglePost({ open, handleClose, post }) {
           {/* Add Comment Input */}
           <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
             <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
-            <Button
-              variant="contained"
-              sx={{
+            <Button sx={{
                 bgcolor: "#4F4DB4",
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
-              }}
-            >
-              Post
-            </Button>
+              }} variant="contained">Post</Button>
           </Box>
         </Box>
 
