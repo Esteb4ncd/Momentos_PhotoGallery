@@ -122,7 +122,18 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
           </Typography>
 
           {/* Save Button */}
-          <Button variant="contained" onClick={handleSave}>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+                position: "absolute",
+                bottom: 20,
+                width: "48%",
+              backgroundColor: "#4F4DB4",
+              color: "#fff",
+              "&:hover": { backgroundColor: "#3f3da0" },
+            }}
+          >
             Save Changes
           </Button>
         </Box>

@@ -17,7 +17,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentLikes, setCommentLikes] = useState({});
 
-  const comments = post.comments || []; // optional: take from post or use defaults
+  const comments = post.comments || [];
 
   const handleLike = () => {
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
@@ -32,17 +32,14 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth={false}
+      maxWidth="md"
+      fullWidth
       PaperProps={{
         sx: {
-          width: "80vw",
-          maxWidth: "1000px",
           borderRadius: 3,
           maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
-          mx: "auto",
-          boxSizing: "border-box",
           overflow: "hidden",
         },
       }}
@@ -53,7 +50,6 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
           <CloseIcon />
         </IconButton>
 
-        {/* Edit button for own post */}
         <Button
           variant="outlined"
           size="small"
@@ -78,7 +74,16 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
         }}
       >
         {/* Left Side: Info + Comments */}
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", p: 3, overflowY: "auto" }}>
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            p: 3,
+            overflowY: "auto",
+            bgcolor: "background.paper",
+          }}
+        >
           {/* Username + Like */}
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -133,12 +138,30 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
           {/* Add Comment Input */}
           <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
             <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
-            <Button variant="contained">Post</Button>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "#4F4DB4",
+                color: "#fff",
+                "&:hover": { bgcolor: "#3f3da0" },
+              }}
+            >
+              Post
+            </Button>
           </Box>
         </Box>
 
         {/* Right Side: Image */}
-        <Box sx={{ flex: 1, bgcolor: "black", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Box
+          sx={{
+            flex: 1,
+            bgcolor: "black",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+          }}
+        >
           <img
             src={post.imageUrl || post.src}
             alt={post.caption}
