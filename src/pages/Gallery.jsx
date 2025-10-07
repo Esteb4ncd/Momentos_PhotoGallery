@@ -16,7 +16,17 @@ const Gallery = () => {
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2
+              borderRadius: 2,
+              '& fieldset': {
+                borderWidth: '2px',
+              },
+              '&:hover fieldset': {
+                borderWidth: '2px',
+              },
+              '&.Mui-focused fieldset': {
+                borderWidth: '2px',
+                borderColor: '#4f40b4',
+              },
             }
           }}
           InputProps={{
@@ -35,7 +45,13 @@ const Gallery = () => {
             sx={{
               borderRadius: 2,
               textTransform: 'none',
-              px: 3
+              px: 3,
+              borderColor: '#4f40b4',
+              color: '#4f40b4',
+              '&:hover': {
+                borderColor: '#4f40b4',
+                backgroundColor: 'rgba(79, 64, 180, 0.1)',
+              }
             }}
           >
             Filter
