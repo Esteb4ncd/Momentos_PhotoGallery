@@ -40,6 +40,27 @@ const mockUsers = {
         joined: "September 2023",
         pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
         photos: samplePhotos.filter(photo => photo.username === "kaylaluo")
+    },
+    "sarah": {
+        username: "sarah",
+        bio: "Cat lover and amateur photographer 🐱",
+        joined: "February 2023",
+        pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
+        photos: []
+    },
+    "kayla": {
+        username: "kayla",
+        bio: "Travel blogger and sunset chaser 🌅",
+        joined: "April 2023",
+        pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
+        photos: []
+    },
+    "emma": {
+        username: "emma",
+        bio: "Nature enthusiast and outdoor explorer 🌲",
+        joined: "May 2023",
+        pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg",
+        photos: []
     }
 };
 

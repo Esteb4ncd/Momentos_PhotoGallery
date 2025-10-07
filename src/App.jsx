@@ -29,6 +29,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/profilepage" element={<ProfilePage />} />
+        <Route path="/user/:username" element={<UserProfile />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
@@ -41,14 +42,7 @@ function App() {
       <CssBaseline />
       <Box sx={{ backgroundColor: 'white', minHeight: '100vh', margin: 0, padding: 0 }}>
         <Router>
-          {/* NavBar outside Routes so it’s visible on all pages */}
-          <NavBar />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/profilepage" element={<ProfilePage />} />
-            <Route path="/" element={<Navigate to="/login" replace />} />
-          </Routes>
+          <AppContent />
         </Router>
       </Box>
     </ThemeProvider>
