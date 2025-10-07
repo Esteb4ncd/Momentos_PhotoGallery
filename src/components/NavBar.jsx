@@ -56,21 +56,20 @@ export default function NavBar() {
                 {/* Left Side Box (Logo) */}
                 <Box
                     sx= {{ 
-                        display: "fixed",
+                        display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: 'center',
                         p: 2,
                     }}>
-                    <Typography variant="h4"
-                    sx={{
-                        fontWeight: 'bold',
-                        alignContent: 'center',
-                        color: '#4f40b4',
-                    }}
-                    >
-                        MOMENTOS
-                    </Typography>
+                    <img 
+                        src="/Momentos_Wordmark.svg" 
+                        alt="Momentos" 
+                        style={{ 
+                            height: '40px',
+                            width: 'auto'
+                        }}
+                    />
                 </Box>
 
                 {/* Hamburger Menu for Mobile/Tablet */}
