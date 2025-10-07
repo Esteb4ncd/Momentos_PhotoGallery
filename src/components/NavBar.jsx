@@ -5,15 +5,19 @@ import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import UploadPostModal from './UploadPostModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 // Upload Post Modal Stuff:
     const [open, setOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    
+    const handleGalleryClick = () => navigate('/gallery');
+    const handleProfileClick = () => navigate('/profilepage');
 
     return ( 
     
@@ -87,6 +91,7 @@ export default function NavBar() {
                     >
                         {/* Gallery Button */}
                         <Button 
+                            onClick={handleGalleryClick}
                             sx= {{
                                 flexDirection: "column",
                                 justifyContent: "flex-end",
@@ -99,6 +104,9 @@ export default function NavBar() {
                                 color: 'white',
                                 pointer: 'pointer',
                                 borderRadius: '6px',
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             },
                             '&:active': {
                                 border: '1px solid black',
@@ -128,6 +136,9 @@ export default function NavBar() {
                                 color: 'white',
                                 pointer: 'pointer',
                                 borderRadius: '6px'
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             }
                             }}
                         >
@@ -142,6 +153,7 @@ export default function NavBar() {
 
                         {/* Profile */}
                         <Button 
+                            onClick={handleProfileClick}
                             sx= {{
                             display: "fixed",
                             flexDirection: "column",
@@ -154,6 +166,9 @@ export default function NavBar() {
                                 color: 'white',
                                 pointer: 'pointer',
                                 borderRadius: '6px'
+                            },
+                            '&:focus': {
+                                outline: 'none',
                             }
                             }}
                         >
