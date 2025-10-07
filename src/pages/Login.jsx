@@ -14,9 +14,9 @@ const Login = () => {
       {/* Left Section - Branding */}
       <Box sx={{ 
         flex: '0 0 50%',
-        backgroundImage: 'url(/momentos_loginpic.jpg)',
+        backgroundImage: 'url(/momentos_loginpic2.jpg)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
         display: 'flex',
         alignItems: 'flex-start',
