@@ -63,7 +63,7 @@ export default function NavBar() {
                         p: 2,
                     }}>
                     <img 
-                        src="/Momentos_Wordmark.svg" 
+                        src="/Momentos_Wordmark.png" 
                         alt="Momentos" 
                         style={{ 
                             height: '40px',
