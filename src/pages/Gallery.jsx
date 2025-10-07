@@ -130,6 +130,7 @@ const Gallery = () => {
           </Grid>
         ))}
       </Grid>
+      
 
       {/* Overlay */}
       <SinglePost open={open} handleClose={handleClose} post={selectedPost} />

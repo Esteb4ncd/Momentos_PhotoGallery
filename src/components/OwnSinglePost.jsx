@@ -1,0 +1,151 @@
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { useState } from "react";
+
+export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
+  if (!post) return null;
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const [commentLikes, setCommentLikes] = useState({});
+
+  const comments = post.comments || []; // optional: take from post or use defaults
+
+  const handleLike = () => {
+    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+    setLiked(!liked);
+  };
+
+  const handleCommentLike = (id) => {
+    setCommentLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth={false}
+      PaperProps={{
+        sx: {
+          width: "80vw",
+          maxWidth: "1000px",
+          borderRadius: 3,
+          maxHeight: "90vh",
+          display: "flex",
+          flexDirection: "column",
+          mx: "auto",
+          boxSizing: "border-box",
+          overflow: "hidden",
+        },
+      }}
+    >
+      {/* Top-right: Close + Edit button */}
+      <Box sx={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 1, zIndex: 2 }}>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+
+        {/* Edit button for own post */}
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={onEdit}
+          sx={{
+            color: "primary.main",
+            borderColor: "primary.main",
+            "&:hover": { backgroundColor: "#f0f0f0", borderColor: "primary.main" },
+          }}
+        >
+          Edit
+        </Button>
+      </Box>
+
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          p: 0,
+          width: "100%",
+          height: "70vh",
+        }}
+      >
+        {/* Left Side: Info + Comments */}
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", p: 3, overflowY: "auto" }}>
+          {/* Username + Like */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
+              <Typography variant="h6">{post.username}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                {post.location}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+                <FavoriteIcon />
+              </IconButton>
+              <Typography sx={{ ml: 1 }}>
+                {likeCount} {likeCount === 1 ? "like" : "likes"}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Caption */}
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            {post.caption}
+          </Typography>
+
+          {/* Date */}
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 2 }}>
+            {post.date}
+          </Typography>
+
+          {/* Comments */}
+          <Box sx={{ flex: 1, overflowY: "auto" }}>
+            {comments.map((comment) => (
+              <Box key={comment.id} sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+                  <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
+                  <Box>
+                    <Typography variant="subtitle2">{comment.username}</Typography>
+                    <Typography variant="body2">{comment.text}</Typography>
+                  </Box>
+                </Box>
+                <IconButton
+                  size="small"
+                  onClick={() => handleCommentLike(comment.id)}
+                  color={commentLikes[comment.id] ? "error" : "default"}
+                >
+                  <FavoriteIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
+
+          {/* Add Comment Input */}
+          <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
+            <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
+            <Button variant="contained">Post</Button>
+          </Box>
+        </Box>
+
+        {/* Right Side: Image */}
+        <Box sx={{ flex: 1, bgcolor: "black", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <img
+            src={post.imageUrl || post.src}
+            alt={post.caption}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+}
