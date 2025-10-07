@@ -14,11 +14,14 @@ const Login = () => {
       {/* Left Section - Branding */}
       <Box sx={{ 
         flex: '0 0 50%',
-        backgroundColor: '#f5f5f5',
+        backgroundImage: 'url(/momentos_loginpic.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: '0 60px'
+        padding: '120px 60px 0 60px'
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <Typography 
@@ -26,9 +29,9 @@ const Login = () => {
             component="h1" 
             sx={{ 
               fontWeight: 'bold',
-              color: 'black',
+              color: 'white',
               fontSize: '3.5rem',
-              letterSpacing: '0.15em',
+              letterSpacing: '0.05em',
               mb: 3,
               lineHeight: 1.1
             }}
@@ -39,12 +42,12 @@ const Login = () => {
             variant="h5" 
             sx={{ 
               fontWeight: 'bold',
-              color: 'black',
+              color: 'white',
               letterSpacing: '0.08em',
               fontSize: '1.4rem'
             }}
           >
-            CONNECT WITH PHOTOS
+            Connect with Photos
           </Typography>
         </Box>
       </Box>
@@ -80,7 +83,7 @@ const Login = () => {
               mb: 4
             }}
           >
-            WELCOME BACK! PLEASE LOGIN TO YOUR ACCOUNT
+            Welcome back! Please login to your account
           </Typography>
           
           {/* Input Fields */}
@@ -100,7 +103,7 @@ const Login = () => {
               variant="outlined"
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 0,
+                  borderRadius: '10px',
                   border: '1px solid black',
                   '& fieldset': {
                     border: 'none',
@@ -136,7 +139,7 @@ const Login = () => {
               variant="outlined"
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 0,
+                  borderRadius: '10px',
                   border: '1px solid black',
                   '& fieldset': {
                     border: 'none',
@@ -182,7 +185,7 @@ const Login = () => {
                     color: 'black'
                   }}
                 >
-                  REMEMBER ME
+                  Remember me
                 </Typography>
               }
             />
@@ -198,7 +201,7 @@ const Login = () => {
                 },
               }}
             >
-              FORGOT PASSWORD?
+              Forgot password?
             </Link>
           </Box>
           
@@ -208,16 +211,16 @@ const Login = () => {
             variant="contained"
             onClick={handleLogin}
             sx={{
-              backgroundColor: '#f5f5f5',
-              color: 'black',
+              backgroundColor: '#4f40b4',
+              color: 'white',
               fontWeight: 'bold',
               fontSize: '1rem',
               py: 1.5,
               mb: 3,
-              borderRadius: 0,
+              borderRadius: '10px',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#e0e0e0',
+                backgroundColor: '#3d2f9e',
               },
             }}
           >
@@ -233,7 +236,7 @@ const Login = () => {
               textAlign: 'center'
             }}
           >
-            DONT HAVE AN ACCOUNT?{' '}
+            Don't have an account?{' '}
             <Link
               href="#"
               sx={{
