@@ -86,6 +86,16 @@ const ProfilePage = () => {
     handleCloseEdit();
   };
 
+  // When likes update inside modal, refresh photos state with latest post from storage
+  useEffect(() => {
+    if (!selectedPost) return;
+    const latest = getPostById(selectedPost.id);
+    if (latest && latest.likes !== selectedPost.likes) {
+      setPhotos((prev) => prev.map(p => p.id === latest.id ? latest : p));
+      setSelectedPost(latest);
+    }
+  }, [openPost, selectedPost?.likes]);
+
   return (
     <>
       <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10, mb: 4}}>

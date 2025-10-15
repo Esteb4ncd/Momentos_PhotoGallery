@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import { addCommentToPost } from "../utils/posts";
+import { addCommentToPost, setPostLikes } from "../utils/posts";
 import { getCurrentUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -30,8 +30,12 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, onDelet
   const [commentsState, setCommentsState] = useState(post.comments || []);
 
   const handleLike = () => {
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
-    setLiked(!liked);
+    const next = liked ? likeCount - 1 : likeCount + 1;
+    const updated = setPostLikes(post.id, next);
+    if (updated) {
+      setLikeCount(updated.likes || 0);
+      setLiked(!liked);
+    }
   };
 
   const handleCommentLike = (id) => {

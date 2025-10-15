@@ -67,4 +67,13 @@ export function deletePostById(postId) {
   return filtered.length !== posts.length;
 }
 
+export function setPostLikes(postId, likes) {
+  const posts = readAllPosts();
+  const idx = posts.findIndex(p => p.id === postId);
+  if (idx === -1) return null;
+  posts[idx] = { ...posts[idx], likes: Math.max(0, Number(likes) || 0) };
+  writeAllPosts(posts);
+  return posts[idx];
+}
+
 
