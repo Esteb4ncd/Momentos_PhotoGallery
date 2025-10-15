@@ -10,12 +10,20 @@ import {
 } from "@mui/material";
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
+import { getCurrentUser } from "../utils/auth";
 
 const ProfilePage = () => {
   const [photos, setPhotos] = useState([]);
   const [openPost, setOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Get current user on component mount
+  useEffect(() => {
+    const user = getCurrentUser();
+    setCurrentUser(user);
+  }, []);
 
   // Fetch random dog images
   useEffect(() => {
@@ -73,7 +81,7 @@ const ProfilePage = () => {
   }}
 />
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          Yo Mama
+          {currentUser?.fullName || "Guest User"}
         </Typography>
 
         <Box
@@ -85,7 +93,9 @@ const ProfilePage = () => {
             borderRadius: 1,
           }}
         >
-          <Typography variant="body2">Proud dog lover </Typography>
+          <Typography variant="body2">
+            {currentUser?.bio || "No bio yet. Add one to tell others about yourself!"}
+          </Typography>
         </Box>
 
         <Typography
@@ -93,7 +103,7 @@ const ProfilePage = () => {
           color="text.secondary"
           sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
         >
-          JOINED SEPT 2025 | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
+          JOINED {currentUser?.joinedDate ? new Date(currentUser.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase() : 'RECENTLY'} | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
         </Typography>
 
         {/* Responsive Photo Grid */}
