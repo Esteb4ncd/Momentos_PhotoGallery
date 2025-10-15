@@ -10,10 +10,48 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (fullName.trim().length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters';
+    }
+
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!validateEmail(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!confirmPassword.trim()) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSignUp = () => {
-    // TODO: Add validation and signup logic here
-    console.log('SignUp attempt:', { fullName, email, password, confirmPassword });
-    navigate('/gallery');
+    if (validateForm()) {
+      console.log('SignUp attempt:', { fullName, email, password });
+      // TODO: Add actual signup logic here
+      navigate('/gallery');
+    }
   };
 
   return (
@@ -107,10 +145,12 @@ const SignUp = () => {
               variant="outlined"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              error={!!errors.fullName}
+              helperText={errors.fullName}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.fullName ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -123,6 +163,11 @@ const SignUp = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
@@ -145,10 +190,12 @@ const SignUp = () => {
               variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.email ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -161,6 +208,11 @@ const SignUp = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
@@ -183,10 +235,12 @@ const SignUp = () => {
               variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={!!errors.password}
+              helperText={errors.password}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.password ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -199,6 +253,11 @@ const SignUp = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
@@ -221,10 +280,12 @@ const SignUp = () => {
               variant="outlined"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.confirmPassword ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -237,6 +298,11 @@ const SignUp = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
