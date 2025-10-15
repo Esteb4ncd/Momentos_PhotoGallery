@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Box, TextField, Button, Link } from '@mui/material';
+import { Typography, Box, TextField, Button, Link, CircularProgress } from '@mui/material';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -9,6 +9,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,11 +47,23 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validateForm()) {
-      console.log('SignUp attempt:', { fullName, email, password });
-      // TODO: Add actual signup logic here
-      navigate('/gallery');
+      setIsLoading(true);
+      
+      try {
+        // Simulate signup delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        console.log('SignUp successful:', { fullName, email });
+        // TODO: Add actual signup logic here
+        navigate('/gallery');
+      } catch (error) {
+        console.error('SignUp error:', error);
+        setErrors({ general: 'Signup failed. Please try again.' });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -308,12 +321,32 @@ const SignUp = () => {
             />
           </Box>
           
+          {/* General Error Display */}
+          {errors.general && (
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#f44336',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                mb: 2,
+                p: 1,
+                backgroundColor: '#ffebee',
+                borderRadius: '5px',
+                border: '1px solid #f44336'
+              }}
+            >
+              {errors.general}
+            </Typography>
+          )}
+          
           {/* Sign Up Button */}
           <Button
             fullWidth
             variant="contained"
             color="primary"
             onClick={handleSignUp}
+            disabled={isLoading}
             sx={{
               color: 'white',
               fontWeight: 'bold',
@@ -325,9 +358,20 @@ const SignUp = () => {
               '&:hover': {
                 backgroundColor: '#3d2f9e',
               },
+              '&:disabled': {
+                backgroundColor: '#cccccc',
+                color: '#666666',
+              },
             }}
           >
-            SIGN UP
+            {isLoading ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} sx={{ color: '#666666' }} />
+                <span>Creating account...</span>
+              </Box>
+            ) : (
+              'SIGN UP'
+            )}
           </Button>
           
           {/* Login Link */}
