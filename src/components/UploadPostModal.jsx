@@ -18,7 +18,7 @@ export default function UploadPostModal({ open, handleClose }) {
                 minWidth: 600,
                 outline: 'none'
             }}>
-                <UploadPost />
+                <UploadPost handleClose={handleClose} />
             </Box>
         </Modal>
     );

@@ -11,6 +11,8 @@ import {
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
 import { getCurrentUser } from "../utils/auth";
+import { getPostsByUsername, getPostById } from "../utils/posts";
+import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
   const [photos, setPhotos] = useState([]);
@@ -18,6 +20,7 @@ const ProfilePage = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const location = useLocation();
 
   // Get current user on component mount
   useEffect(() => {
@@ -25,28 +28,25 @@ const ProfilePage = () => {
     setCurrentUser(user);
   }, []);
 
-  // Fetch random dog images
+  // Load user's posts from localStorage
   useEffect(() => {
-    const fetchDogs = async () => {
-      const urls = [];
-      for (let i = 1; i <= 9; i++) {
-        const res = await fetch("https://dog.ceo/api/breeds/image/random");
-        const data = await res.json();
-        urls.push({
-          id: i,
-          src: data.message,
-          username: "Me",
-          pfpUrl: `https://randomuser.me/api/portraits/men/${10 + i}.jpg`,
-          caption: `Cute dog ${i}`,
-          date: `Oct ${10 - i}, 2025`,
-          location: "Toronto",
-          likes: Math.floor(Math.random() * 10),
-        });
+    const user = getCurrentUser();
+    const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+    const posts = getPostsByUsername(username);
+    setPhotos(posts);
+  }, [currentUser]);
+
+  // If navigated with a newPostId, open it
+  useEffect(() => {
+    const newPostId = location.state?.newPostId;
+    if (newPostId) {
+      const post = getPostById(newPostId);
+      if (post) {
+        setSelectedPost(post);
+        setOpenPost(true);
       }
-      setPhotos(urls);
-    };
-    fetchDogs();
-  }, []);
+    }
+  }, [location.state]);
 
   const handleOpenPost = (post) => {
     setSelectedPost(post);
