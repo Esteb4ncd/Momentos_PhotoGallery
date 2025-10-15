@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Box, TextField, Button, Link, CircularProgress } from '@mui/material';
+import { saveUser, emailExists, setCurrentUser } from '../utils/auth';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ const SignUp = () => {
       newErrors.email = 'Email is required';
     } else if (!validateEmail(email)) {
       newErrors.email = 'Please enter a valid email address';
+    } else if (emailExists(email)) {
+      newErrors.email = 'An account with this email already exists';
     }
 
     if (!password.trim()) {
@@ -55,9 +58,20 @@ const SignUp = () => {
         // Simulate signup delay
         await new Promise(resolve => setTimeout(resolve, 2000));
         
+        // Save the new user account
+        const newUser = saveUser({
+          fullName,
+          email,
+          password
+        });
+        
+        // Set as current user
+        setCurrentUser(newUser);
+        
         console.log('SignUp successful:', { fullName, email });
-        // TODO: Add actual signup logic here
-        navigate('/gallery');
+        
+        // Navigate to profile page
+        navigate('/profilepage');
       } catch (error) {
         console.error('SignUp error:', error);
         setErrors({ general: 'Signup failed. Please try again.' });
