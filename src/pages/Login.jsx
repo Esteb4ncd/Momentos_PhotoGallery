@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button } from '@mui/material';
 
@@ -8,6 +8,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Load saved credentials on component mount
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem('momentosRememberMe');
+    if (savedCredentials) {
+      const { email: savedEmail, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
+      setEmail(savedEmail || '');
+      setRememberMe(savedRememberMe || false);
+    }
+  }, []);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,6 +45,16 @@ const Login = () => {
 
   const handleLogin = () => {
     if (validateForm()) {
+      // Handle remember me functionality
+      if (rememberMe) {
+        localStorage.setItem('momentosRememberMe', JSON.stringify({
+          email: email,
+          rememberMe: true
+        }));
+      } else {
+        localStorage.removeItem('momentosRememberMe');
+      }
+      
       // TODO: Add actual authentication logic here
       navigate('/gallery');
     }
