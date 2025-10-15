@@ -11,7 +11,7 @@ import {
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
 import { getCurrentUser } from "../utils/auth";
-import { getPostsByUsername, getPostById } from "../utils/posts";
+import { getPostsByUsername, getPostById, deletePostById } from "../utils/posts";
 import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
@@ -40,6 +40,12 @@ const ProfilePage = () => {
   useEffect(() => {
     const newPostId = location.state?.newPostId;
     if (newPostId) {
+      // Refresh photos so the new post appears in the grid
+      const user = getCurrentUser();
+      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+      const posts = getPostsByUsername(username);
+      setPhotos(posts);
+
       const post = getPostById(newPostId);
       if (post) {
         setSelectedPost(post);
@@ -56,6 +62,19 @@ const ProfilePage = () => {
   const handleClosePost = () => setOpenPost(false);
 
   const handleEdit = () => setEditOpen(true);
+
+  const handleDelete = (postId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
+    const deleted = deletePostById(postId);
+    if (deleted) {
+      setPhotos((prev) => prev.filter(p => p.id !== postId));
+      if (selectedPost?.id === postId) {
+        setOpenPost(false);
+        setSelectedPost(null);
+      }
+    }
+  };
 
   const handleCloseEdit = () => setEditOpen(false);
 
@@ -195,6 +214,7 @@ const ProfilePage = () => {
         handleClose={handleClosePost}
         post={selectedPost}
         onEdit={handleEdit}
+        onDelete={() => selectedPost && handleDelete(selectedPost.id)}
       />
 
       <OwnSinglePostEdit

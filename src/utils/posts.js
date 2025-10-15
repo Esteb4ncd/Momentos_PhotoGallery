@@ -43,4 +43,28 @@ export function addPost({ username, pfpUrl, caption, location, imageDataUrl }) {
   return newPost;
 }
 
+export function addCommentToPost(postId, { username, pfpUrl, text }) {
+  const posts = readAllPosts();
+  const idx = posts.findIndex(p => p.id === postId);
+  if (idx === -1) return null;
+  const comment = {
+    id: `${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    username,
+    pfpUrl,
+    text,
+    createdAt: new Date().toISOString(),
+  };
+  const existing = Array.isArray(posts[idx].comments) ? posts[idx].comments : [];
+  posts[idx] = { ...posts[idx], comments: [...existing, comment] };
+  writeAllPosts(posts);
+  return posts[idx];
+}
+
+export function deletePostById(postId) {
+  const posts = readAllPosts();
+  const filtered = posts.filter(p => p.id !== postId);
+  writeAllPosts(filtered);
+  return filtered.length !== posts.length;
+}
+
 
