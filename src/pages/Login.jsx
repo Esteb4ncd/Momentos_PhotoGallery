@@ -350,10 +350,11 @@ const Login = () => {
           >
             Don't have an account?{' '}
             <Link
-              href="#"
+              onClick={() => navigate('/signup')}
               sx={{
                 color: 'black',
                 textDecoration: 'none',
+                cursor: 'pointer',
                 '&:hover': {
                   textDecoration: 'underline',
                 },
