@@ -138,7 +138,7 @@ const Login = () => {
         justifyContent: 'center',
         padding: { xs: '40px 20px', sm: '40px 40px', md: '0 60px' }
       }}>
-        <Box sx={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+        <Box sx={{ width: '100%', maxWidth: { xs: '100%', sm: 450, md: 500 }, textAlign: 'center' }}>
           <Typography 
             variant="h3" 
             component="h1" 
