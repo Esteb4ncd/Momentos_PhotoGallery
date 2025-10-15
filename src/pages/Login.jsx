@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button, CircularProgress } from '@mui/material';
+import { findUser, setCurrentUser } from '../utils/auth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -52,6 +53,19 @@ const Login = () => {
         // Simulate authentication delay
         await new Promise(resolve => setTimeout(resolve, 1500));
         
+        // Try to find the user
+        const user = findUser(email, password);
+        
+        if (!user) {
+          // Account not found or incorrect password
+          setErrors({ general: 'Account not found. Please check your email and password.' });
+          setIsLoading(false);
+          return;
+        }
+        
+        // Set as current user
+        setCurrentUser(user);
+        
         // Handle remember me functionality
         if (rememberMe) {
           localStorage.setItem('momentosRememberMe', JSON.stringify({
@@ -62,8 +76,10 @@ const Login = () => {
           localStorage.removeItem('momentosRememberMe');
         }
         
-        // TODO: Add actual authentication logic here
-        navigate('/gallery');
+        console.log('Login successful:', user.fullName);
+        
+        // Navigate to profile page
+        navigate('/profilepage');
       } catch (error) {
         console.error('Login error:', error);
         setErrors({ general: 'Login failed. Please try again.' });
