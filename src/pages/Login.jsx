@@ -7,9 +7,37 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = 'Email/Username is required';
+    } else if (!validateEmail(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleLogin = () => {
-    navigate('/gallery');
+    if (validateForm()) {
+      // TODO: Add actual authentication logic here
+      navigate('/gallery');
+    }
   };
 
   return (
@@ -103,10 +131,12 @@ const Login = () => {
               variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.email ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -119,6 +149,11 @@ const Login = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
@@ -141,10 +176,12 @@ const Login = () => {
               variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={!!errors.password}
+              helperText={errors.password}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: '1px solid black',
+                  border: errors.password ? '1px solid #f44336' : '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -157,6 +194,11 @@ const Login = () => {
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
             />
