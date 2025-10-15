@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button } from '@mui/material';
+import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button, CircularProgress } from '@mui/material';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load saved credentials on component mount
   useEffect(() => {
@@ -43,20 +44,32 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validateForm()) {
-      // Handle remember me functionality
-      if (rememberMe) {
-        localStorage.setItem('momentosRememberMe', JSON.stringify({
-          email: email,
-          rememberMe: true
-        }));
-      } else {
-        localStorage.removeItem('momentosRememberMe');
-      }
+      setIsLoading(true);
       
-      // TODO: Add actual authentication logic here
-      navigate('/gallery');
+      try {
+        // Simulate authentication delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Handle remember me functionality
+        if (rememberMe) {
+          localStorage.setItem('momentosRememberMe', JSON.stringify({
+            email: email,
+            rememberMe: true
+          }));
+        } else {
+          localStorage.removeItem('momentosRememberMe');
+        }
+        
+        // TODO: Add actual authentication logic here
+        navigate('/gallery');
+      } catch (error) {
+        console.error('Login error:', error);
+        setErrors({ general: 'Login failed. Please try again.' });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -273,12 +286,32 @@ const Login = () => {
             </Link>
           </Box>
           
+          {/* General Error Display */}
+          {errors.general && (
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#f44336',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                mb: 2,
+                p: 1,
+                backgroundColor: '#ffebee',
+                borderRadius: '5px',
+                border: '1px solid #f44336'
+              }}
+            >
+              {errors.general}
+            </Typography>
+          )}
+          
           {/* Login Button */}
           <Button
             fullWidth
             variant="contained"
             color="primary"
             onClick={handleLogin}
+            disabled={isLoading}
             sx={{
               color: 'white',
               fontWeight: 'bold',
@@ -290,9 +323,20 @@ const Login = () => {
               '&:hover': {
                 backgroundColor: '#3d2f9e',
               },
+              '&:disabled': {
+                backgroundColor: '#cccccc',
+                color: '#666666',
+              },
             }}
           >
-            LOGIN
+            {isLoading ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} sx={{ color: '#666666' }} />
+                <span>Logging in...</span>
+              </Box>
+            ) : (
+              'LOGIN'
+            )}
           </Button>
           
           {/* Sign Up Link */}
