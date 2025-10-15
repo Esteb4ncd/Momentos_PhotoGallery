@@ -4,9 +4,15 @@ import { Typography, Box, TextField, Button, Link } from '@mui/material';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleSignUp = () => {
-    // TODO: Add signup logic here
+    // TODO: Add validation and signup logic here
+    console.log('SignUp attempt:', { fullName, email, password, confirmPassword });
     navigate('/gallery');
   };
 
@@ -99,6 +105,8 @@ const SignUp = () => {
             <TextField
               fullWidth
               variant="outlined"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -135,6 +143,8 @@ const SignUp = () => {
               fullWidth
               type="email"
               variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -171,6 +181,8 @@ const SignUp = () => {
               fullWidth
               type="password"
               variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -207,6 +219,8 @@ const SignUp = () => {
               fullWidth
               type="password"
               variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
