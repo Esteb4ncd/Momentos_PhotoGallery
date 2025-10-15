@@ -28,7 +28,7 @@ const Login = () => {
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <img 
-            src="/Momentos_Wordmark.svg" 
+            src="/Momentos_Wordmark.png" 
             alt="Momentos" 
             style={{ 
               height: 'auto',
@@ -101,6 +101,8 @@ const Login = () => {
             <TextField
               fullWidth
               variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -137,6 +139,8 @@ const Login = () => {
               fullWidth
               type="password"
               variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -168,6 +172,8 @@ const Login = () => {
             <FormControlLabel
               control={
                 <Checkbox
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   sx={{
                     color: 'black',
                     '&.Mui-checked': {
