@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import { addCommentToPost, setPostLikes } from "../utils/posts";
+import { addCommentToPost, toggleLikeForUser } from "../utils/posts";
 import { getCurrentUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -17,8 +17,9 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, onDelet
   if (!post) return null;
 
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const currentUser = getCurrentUser() || { id: 'guest' };
+  const [liked, setLiked] = useState(Array.isArray(post.likedBy) ? post.likedBy.includes(currentUser.id) : false);
+  const [likeCount, setLikeCount] = useState(post.likes || (Array.isArray(post.likedBy) ? post.likedBy.length : 0));
   const [commentLikes, setCommentLikes] = useState({});
 
   const handleUsernameClick = (username) => {
@@ -30,11 +31,11 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, onDelet
   const [commentsState, setCommentsState] = useState(post.comments || []);
 
   const handleLike = () => {
-    const next = liked ? likeCount - 1 : likeCount + 1;
-    const updated = setPostLikes(post.id, next);
+    const updated = toggleLikeForUser(post.id, currentUser.id);
     if (updated) {
       setLikeCount(updated.likes || 0);
-      setLiked(!liked);
+      const hasLiked = Array.isArray(updated.likedBy) && updated.likedBy.includes(currentUser.id);
+      setLiked(hasLiked);
     }
   };
 

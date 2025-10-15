@@ -36,6 +36,7 @@ export function addPost({ username, pfpUrl, caption, location, imageDataUrl }) {
     date: now.toISOString().slice(0, 10),
     location: location || '',
     likes: 0,
+    likedBy: [],
     comments: [],
   };
   posts.unshift(newPost);
@@ -67,11 +68,16 @@ export function deletePostById(postId) {
   return filtered.length !== posts.length;
 }
 
-export function setPostLikes(postId, likes) {
+export function toggleLikeForUser(postId, userId) {
   const posts = readAllPosts();
   const idx = posts.findIndex(p => p.id === postId);
   if (idx === -1) return null;
-  posts[idx] = { ...posts[idx], likes: Math.max(0, Number(likes) || 0) };
+  const post = posts[idx];
+  const likedBy = Array.isArray(post.likedBy) ? post.likedBy : [];
+  const hasLiked = likedBy.includes(userId);
+  const nextLikedBy = hasLiked ? likedBy.filter(id => id !== userId) : [...likedBy, userId];
+  const nextLikes = nextLikedBy.length;
+  posts[idx] = { ...post, likedBy: nextLikedBy, likes: nextLikes };
   writeAllPosts(posts);
   return posts[idx];
 }
