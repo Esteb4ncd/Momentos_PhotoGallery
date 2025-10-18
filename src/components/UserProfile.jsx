@@ -11,44 +11,57 @@ import { useNavigate, useParams } from "react-router-dom";
 import { samplePhotos } from "../data/samplePhotos";
 import SinglePost from "./SinglePost";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { fetchRandomUser, getRandomPfpUrl } from "../utils/randomUsers";
+import { fetchRandomUser, getRandomPfpUrl, getFallbackImage, getUserProfileImage } from "../utils/randomUsers";
 
-const mockUsers = {
-  sarahwang: {
-    username: "sarahwang",
-    bio: "Photography enthusiast capturing life's beautiful moments 📸",
-    joined: "January 2023",
-    pfpUrl: getRandomPfpUrl('female'), // Dynamic female profile image
-    photos: samplePhotos.filter((photo) => photo.username === "sarahwang"),
-  },
-  estebancd: {
-    username: "estebancd",
-    bio: "Adventure seeker and nature lover 🌲",
-    joined: "March 2023",
-    pfpUrl: getRandomPfpUrl('male'), // Dynamic male profile image
-    photos: samplePhotos.filter((photo) => photo.username === "estebancd"),
-  },
-  emmajarnie: {
-    username: "emmajarnie",
-    bio: "Artist and creative soul expressing through photography 🎨",
-    joined: "June 2023",
-    pfpUrl: getRandomPfpUrl('female'), // Dynamic female profile image
-    photos: samplePhotos.filter((photo) => photo.username === "emmajarnie"),
-  },
-  kaylaluo: {
-    username: "kaylaluo",
-    bio: "Tech enthusiast and photography hobbyist 💻📷",
-    joined: "September 2023",
-    pfpUrl: getRandomPfpUrl('female'), // Dynamic female profile image
-    photos: samplePhotos.filter((photo) => photo.username === "kaylaluo"),
-  },
+// Generate random profile images once when the module loads
+const generateMockUsers = () => {
+  const users = {
+    sarahwang: {
+      username: "sarahwang",
+      bio: "Photography enthusiast capturing life's beautiful moments 📸",
+      joined: "January 2023",
+      pfpUrl: getUserProfileImage('sarahwang'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "sarahwang"),
+    },
+    estebancd: {
+      username: "estebancd",
+      bio: "Adventure seeker and nature lover 🌲",
+      joined: "March 2023",
+      pfpUrl: getUserProfileImage('estebancd'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "estebancd"),
+    },
+    emmajarnie: {
+      username: "emmajarnie",
+      bio: "Artist and creative soul expressing through photography 🎨",
+      joined: "June 2023",
+      pfpUrl: getUserProfileImage('emmajarnie'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "emmajarnie"),
+    },
+    kaylaluo: {
+      username: "kaylaluo",
+      bio: "Tech enthusiast and photography hobbyist 💻📷",
+      joined: "September 2023",
+      pfpUrl: getUserProfileImage('kaylaluo'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "kaylaluo"),
+    },
+  };
+  
+  // Debug: Log the generated URLs
+  console.log('Generated profile URLs:', Object.entries(users).map(([username, user]) => ({
+    username,
+    pfpUrl: user.pfpUrl
+  })));
+  
+  return users;
 };
+
+// Generate the mock users once
+const mockUsers = generateMockUsers();
 
 const UserProfile = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [refreshingImage, setRefreshingImage] = useState(false);
 
   // Modal state
   const [selectedPost, setSelectedPost] = useState(null);
@@ -62,37 +75,6 @@ const UserProfile = () => {
   const handleClosePost = () => {
     setOpenPost(false);
     setSelectedPost(null);
-  };
-
-  // Function to refresh profile image with new random user data
-  const refreshProfileImage = async () => {
-    if (!userData) return;
-    
-    setRefreshingImage(true);
-    try {
-      // Determine gender based on username
-      const gender = username.includes('esteban') ? 'male' : 'female';
-      
-      // Fetch new random user data
-      const randomUsers = await fetchRandomUser(gender, 1);
-      const randomUser = randomUsers[0];
-      
-      // Update user data with new profile image
-      setUserData(prev => ({
-        ...prev,
-        pfpUrl: randomUser.picture.large
-      }));
-    } catch (error) {
-      console.error('Error refreshing profile image:', error);
-      // Fallback to simple random image
-      const gender = username.includes('esteban') ? 'male' : 'female';
-      setUserData(prev => ({
-        ...prev,
-        pfpUrl: getRandomPfpUrl(gender)
-      }));
-    } finally {
-      setRefreshingImage(false);
-    }
   };
 
   useEffect(() => {
@@ -127,40 +109,17 @@ const UserProfile = () => {
   return (
     <Container maxWidth="md" sx={{ textAlign: "center", mt: 10 }}>
       {/* Profile Info */}
-      <Box sx={{ position: 'relative', display: 'inline-block' }}>
-        <Avatar
-          alt="User Avatar"
-          src={userData.pfpUrl}
-          sx={{ 
-            width: 120, 
-            height: 120, 
-            margin: "0 auto", 
-            mb: 2,
-            cursor: 'pointer',
-            opacity: refreshingImage ? 0.7 : 1,
-            transition: 'opacity 0.3s ease',
-            '&:hover': {
-              opacity: 0.8
-            }
-          }}
-          onClick={refreshProfileImage}
-          title="Click to refresh profile image"
-        />
-        {refreshingImage && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              color: 'primary.main',
-              fontSize: '1.5rem'
-            }}
-          >
-            🔄
-          </Box>
-        )}
-      </Box>
+      <Avatar
+        alt="User Avatar"
+        src={userData.pfpUrl}
+        sx={{ width: 120, height: 120, margin: "0 auto", mb: 2 }}
+        onError={(e) => {
+          console.log('Random User API image failed, using fallback');
+          // Determine gender for fallback
+          const gender = username.includes('esteban') ? 'male' : 'female';
+          e.target.src = getFallbackImage(gender);
+        }}
+      />
       <Typography variant="h6" sx={{ fontWeight: "bold" }}>
         {userData.username}
       </Typography>
