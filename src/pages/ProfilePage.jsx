@@ -10,35 +10,49 @@ import {
 } from "@mui/material";
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
+import { getCurrentUser } from "../utils/auth";
+import { getPostsByUsername, getPostById, deletePostById } from "../utils/posts";
+import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
   const [photos, setPhotos] = useState([]);
   const [openPost, setOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const location = useLocation();
 
-  // Fetch random dog images
+  // Get current user on component mount
   useEffect(() => {
-    const fetchDogs = async () => {
-      const urls = [];
-      for (let i = 1; i <= 9; i++) {
-        const res = await fetch("https://dog.ceo/api/breeds/image/random");
-        const data = await res.json();
-        urls.push({
-          id: i,
-          src: data.message,
-          username: "Me",
-          pfpUrl: `https://randomuser.me/api/portraits/men/${10 + i}.jpg`,
-          caption: `Cute dog ${i}`,
-          date: `Oct ${10 - i}, 2025`,
-          location: "Toronto",
-          likes: Math.floor(Math.random() * 10),
-        });
-      }
-      setPhotos(urls);
-    };
-    fetchDogs();
+    const user = getCurrentUser();
+    setCurrentUser(user);
   }, []);
+
+  // Load user's posts from localStorage
+  useEffect(() => {
+    const user = getCurrentUser();
+    const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+    const posts = getPostsByUsername(username);
+    setPhotos(posts);
+  }, [currentUser]);
+
+  // If navigated with a newPostId, open it
+  useEffect(() => {
+    const newPostId = location.state?.newPostId;
+    if (newPostId) {
+      // Refresh photos so the new post appears in the grid
+      const user = getCurrentUser();
+      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+      const posts = getPostsByUsername(username);
+      setPhotos(posts);
+
+      const post = getPostById(newPostId);
+      if (post) {
+        setSelectedPost(post);
+        setOpenPost(true);
+      }
+    }
+  }, [location.state]);
 
   const handleOpenPost = (post) => {
     setSelectedPost(post);
@@ -49,6 +63,19 @@ const ProfilePage = () => {
 
   const handleEdit = () => setEditOpen(true);
 
+  const handleDelete = (postId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
+    const deleted = deletePostById(postId);
+    if (deleted) {
+      setPhotos((prev) => prev.filter(p => p.id !== postId));
+      if (selectedPost?.id === postId) {
+        setOpenPost(false);
+        setSelectedPost(null);
+      }
+    }
+  };
+
   const handleCloseEdit = () => setEditOpen(false);
 
   const handleSaveEdit = (updatedPost) => {
@@ -58,6 +85,16 @@ const ProfilePage = () => {
     setSelectedPost(updatedPost);
     handleCloseEdit();
   };
+
+  // When likes update inside modal, refresh photos state with latest post from storage
+  useEffect(() => {
+    if (!selectedPost) return;
+    const latest = getPostById(selectedPost.id);
+    if (latest && latest.likes !== selectedPost.likes) {
+      setPhotos((prev) => prev.map(p => p.id === latest.id ? latest : p));
+      setSelectedPost(latest);
+    }
+  }, [openPost, selectedPost?.likes]);
 
   return (
     <>
@@ -73,7 +110,7 @@ const ProfilePage = () => {
   }}
 />
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          Yo Mama
+          {currentUser?.fullName || "Guest User"}
         </Typography>
 
         <Box
@@ -85,7 +122,9 @@ const ProfilePage = () => {
             borderRadius: 1,
           }}
         >
-          <Typography variant="body2">Proud dog lover </Typography>
+          <Typography variant="body2">
+            {currentUser?.bio || "No bio yet. Add one to tell others about yourself!"}
+          </Typography>
         </Box>
 
         <Typography
@@ -93,7 +132,7 @@ const ProfilePage = () => {
           color="text.secondary"
           sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
         >
-          JOINED SEPT 2025 | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
+          JOINED {currentUser?.joinedDate ? new Date(currentUser.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase() : 'RECENTLY'} | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
         </Typography>
 
         {/* Responsive Photo Grid */}
@@ -185,6 +224,7 @@ const ProfilePage = () => {
         handleClose={handleClosePost}
         post={selectedPost}
         onEdit={handleEdit}
+        onDelete={() => selectedPost && handleDelete(selectedPost.id)}
       />
 
       <OwnSinglePostEdit
