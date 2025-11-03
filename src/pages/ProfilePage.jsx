@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Box,
@@ -28,31 +28,33 @@ const ProfilePage = () => {
     setCurrentUser(user);
   }, []);
 
-  // Load user's posts from localStorage
-  useEffect(() => {
+  // Load user's posts from localStorage - refresh on mount and when location changes
+  const loadPosts = useCallback(() => {
     const user = getCurrentUser();
     const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
     const posts = getPostsByUsername(username);
     setPhotos(posts);
-  }, [currentUser]);
+    return posts;
+  }, []);
 
-  // If navigated with a newPostId, open it
+  useEffect(() => {
+    loadPosts();
+  }, [currentUser, loadPosts]);
+
+  // If navigated with a newPostId, refresh and open it
   useEffect(() => {
     const newPostId = location.state?.newPostId;
     if (newPostId) {
       // Refresh photos so the new post appears in the grid
-      const user = getCurrentUser();
-      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
-      const posts = getPostsByUsername(username);
-      setPhotos(posts);
-
+      const posts = loadPosts();
+      
       const post = getPostById(newPostId);
       if (post) {
         setSelectedPost(post);
         setOpenPost(true);
       }
     }
-  }, [location.state]);
+  }, [location.state, loadPosts]);
 
   const handleOpenPost = (post) => {
     setSelectedPost(post);

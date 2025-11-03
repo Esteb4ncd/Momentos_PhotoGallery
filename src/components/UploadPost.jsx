@@ -22,19 +22,52 @@ export default function UploadPost({ handleClose }) {
   const fileInputRef = React.useRef(null);
   const navigate = useNavigate();
 
-  const fileToDataUrl = (file) =>
-    new Promise((resolve, reject) => {
+  const compressImage = (file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (e) => reject(e);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            if (width > height) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            } else {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
       reader.readAsDataURL(file);
     });
+  };
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const dataUrl = await fileToDataUrl(file);
-      setSelectedImage(dataUrl);
+      try {
+        // Compress image to reduce storage size
+        const compressedDataUrl = await compressImage(file);
+        setSelectedImage(compressedDataUrl);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        // Fallback to original if compression fails
+        const reader = new FileReader();
+        reader.onload = (e) => setSelectedImage(e.target.result);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -43,23 +76,41 @@ export default function UploadPost({ handleClose }) {
   };
 
   const handlePost = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      alert("Please select an image first");
+      return;
+    }
+    
     setIsSubmitting(true);
+    
     try {
       const user = getCurrentUser() || { fullName: "Me", id: "guest" };
       const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
       const pfpUrl = "https://randomuser.me/api/portraits/men/14.jpg";
+      
+      // Create the post
       const newPost = addPost({
         username,
         pfpUrl,
-        caption,
-        location,
+        caption: caption || "",
+        location: location || "",
         imageDataUrl: selectedImage,
       });
-      if (handleClose) handleClose();
-      navigate(`/profilepage`, { state: { newPostId: newPost.id } });
-    } finally {
+      
+      // Close the modal first
+      if (handleClose) {
+        handleClose();
+      }
+      
+      // Small delay to ensure modal closes
+      setTimeout(() => {
+        navigate("/profilepage", { state: { newPostId: newPost.id } });
+      }, 100);
+      
+    } catch (error) {
+      console.error("Error posting:", error);
       setIsSubmitting(false);
+      alert(`Failed to post: ${error.message || "Unknown error. Check console for details."}`);
     }
   };
 
@@ -256,6 +307,7 @@ export default function UploadPost({ handleClose }) {
           position: "absolute",
           bottom: { xs: 10, md: 20 },
           right: { xs: 10, md: 20 },
+          zIndex: 10,
         }}
       >
         <Button
@@ -269,9 +321,14 @@ export default function UploadPost({ handleClose }) {
             color: "#fff",
             fontSize: { xs: '0.875rem', md: '1rem' },
             "&:hover": { bgcolor: "#3f3da0" },
+            pointerEvents: "auto",
           }}
           disabled={!selectedImage || isSubmitting}
-          onClick={handlePost}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handlePost();
+          }}
         >
           {isSubmitting ? "Posting..." : "Post"}
         </Button>
