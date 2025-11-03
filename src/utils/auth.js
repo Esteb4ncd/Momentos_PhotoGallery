@@ -81,3 +81,7 @@ export const updateUserBio = (userId, newBio) => {
   return null;
 };
 
+// (Reverted) update password helper removed
+
+// (Reverted) profile picture helper removed
+

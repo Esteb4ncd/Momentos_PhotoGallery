@@ -553,7 +553,11 @@ const ProfilePage = () => {
     }
   }, [currentUser]);
 
-  // If navigated with a newPostId, open it
+  useEffect(() => {
+    loadPosts();
+  }, [currentUser, loadPosts]);
+
+  // If navigated with a newPostId, refresh and open it
   useEffect(() => {
     const newPostId = location.state?.newPostId;
     if (!newPostId) return;
@@ -568,7 +572,7 @@ const ProfilePage = () => {
       setSelectedPost(post);
       setOpenPost(true);
     }
-  }, [location.state]);
+  }, [location.state, loadPosts]);
 
   // Keep selected post fresh if likes changed elsewhere
   useEffect(() => {

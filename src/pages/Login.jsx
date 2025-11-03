@@ -89,6 +89,8 @@ const Login = () => {
     }
   };
 
+  const handleOpenReset = () => {};
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {/* Left Section - Branding */}
@@ -287,7 +289,6 @@ const Login = () => {
               }
             />
             <Link
-              href="#"
               sx={{
                 color: 'black',
                 textDecoration: 'none',
@@ -297,6 +298,7 @@ const Login = () => {
                   textDecoration: 'underline',
                 },
               }}
+              onClick={handleOpenReset}
             >
               Forgot password?
             </Link>
@@ -382,6 +384,7 @@ const Login = () => {
         </Box>
       </Box>
     </Box>
+
   );
 };
 

@@ -8,7 +8,15 @@ function readAllPosts() {
 }
 
 function writeAllPosts(posts) {
-  localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+  try {
+    const data = JSON.stringify(posts);
+    localStorage.setItem(POSTS_KEY, data);
+  } catch (error) {
+    if (error.name === 'QuotaExceededError') {
+      throw new Error("Storage quota exceeded. Please delete some posts or clear your browser data.");
+    }
+    throw new Error("Failed to save post to storage: " + error.message);
+  }
 }
 
 export function getPostsByUsername(username) {
@@ -22,26 +30,34 @@ export function getPostById(id) {
 }
 
 export function addPost({ username, pfpUrl, caption, location, imageDataUrl }) {
-  const posts = readAllPosts();
-  const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  const now = new Date();
-  const newPost = {
-    id,
-    src: imageDataUrl, // keep schema consistent with existing components
-    imageUrl: imageDataUrl,
-    alt: caption || 'Photo',
-    username,
-    pfpUrl,
-    caption: caption || '',
-    date: now.toISOString().slice(0, 10),
-    location: location || '',
-    likes: 0,
-    likedBy: [],
-    comments: [],
-  };
-  posts.unshift(newPost);
-  writeAllPosts(posts);
-  return newPost;
+  try {
+    if (!imageDataUrl) {
+      throw new Error("Image data is required");
+    }
+    const posts = readAllPosts();
+    const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const now = new Date();
+    const newPost = {
+      id,
+      src: imageDataUrl, // keep schema consistent with existing components
+      imageUrl: imageDataUrl,
+      alt: caption || 'Photo',
+      username,
+      pfpUrl,
+      caption: caption || '',
+      date: now.toISOString().slice(0, 10),
+      location: location || '',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    };
+    posts.unshift(newPost);
+    writeAllPosts(posts);
+    return newPost;
+  } catch (error) {
+    console.error("Error in addPost:", error);
+    throw error;
+  }
 }
 
 export function addCommentToPost(postId, { username, pfpUrl, text }) {
