@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFallbackImage, getUserProfileImage } from "../utils/randomUsers";
 
 export default function SinglePost({ open, handleClose, post }) {
   if (!post) return null;
@@ -25,9 +26,9 @@ export default function SinglePost({ open, handleClose, post }) {
   };
 
   const comments = [
-    { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
-    { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    { id: 1, username: "sarahwang", pfpUrl: getUserProfileImage('sarahwang'), text: "Beautiful shot!" },
+    { id: 2, username: "kaylaluo", pfpUrl: getUserProfileImage('kaylaluo'), text: "Love the colors 🌅" },
+    { id: 3, username: "emmajarnie", pfpUrl: getUserProfileImage('emmajarnie'), text: "Amazing view!" },
   ];
 
   const handleLike = () => {
@@ -97,7 +98,14 @@ export default function SinglePost({ open, handleClose, post }) {
           {/* Username + Like */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
             <Box sx={{ display: "flex", alignItems: "center", flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
-              <Avatar src={post.pfpUrl} sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }} />
+              <Avatar 
+                src={post.pfpUrl} 
+                sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }}
+                onError={(e) => {
+                  const gender = post.username.includes('esteban') ? 'male' : 'female';
+                  e.target.src = getFallbackImage(gender);
+                }}
+              />
               <Typography 
                 variant="h6" 
                 sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" }, fontSize: { xs: '1rem', md: '1.25rem' } }}
@@ -133,12 +141,19 @@ export default function SinglePost({ open, handleClose, post }) {
                 sx={{ display: "flex", alignItems: "flex-start", mb: 2, justifyContent: "space-between" }}
               >
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-                  <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: { xs: 24, md: 30 }, height: { xs: 24, md: 30 } }} />
+                  <Avatar 
+                    src={comment.pfpUrl} 
+                    sx={{ mr: 1, width: { xs: 24, md: 30 }, height: { xs: 24, md: 30 } }}
+                    onError={(e) => {
+                      const gender = comment.username.toLowerCase().includes('esteban') ? 'male' : 'female';
+                      e.target.src = getFallbackImage(gender);
+                    }}
+                  />
                   <Box>
                     <Typography 
                       variant="subtitle2" 
                       sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" }, fontSize: { xs: '0.8rem', md: '0.875rem' } }}
-                      onClick={() => handleUsernameClick(comment.username.toLowerCase())}
+                      onClick={() => handleUsernameClick(comment.username)}
                     >
                       {comment.username}
                     </Typography>

@@ -10,30 +10,54 @@ import {
 } from "@mui/material";
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
+import { getCurrentUser } from "../utils/auth";
+import { getPostsByUsername, getPostById, deletePostById } from "../utils/posts";
+import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
-    const [photos, setPhotos] = useState([]);
-    const [openPost, setOpenPost] = useState(false);
-    const [selectedPost, setSelectedPost] = useState(null);
-    const [editOpen, setEditOpen] = useState(false);
-    // functional edit stuff below
-    const [bio, setBio] = useState(
-        localStorage.getItem("bio") || "Proud dog lover"
-    );
-    const [name, setName] = useState(
-        localStorage.getItem("name") || "Bob Cooper"
-    );
-    const [profilePic, setProfilePic] = useState(
-        localStorage.getItem("profilePic") ||
-            "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg"
-    );
-    const [editingBio, setEditingBio] = useState(false);
-    const [editingPic, setEditingPic] = useState(false);
+  const [photos, setPhotos] = useState([]);
+  const [openPost, setOpenPost] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const location = useLocation();
 
-    const handleBioSave = () => {
-        localStorage.setItem("bio", bio);
-        setEditingBio(false);
-    };
+  // Get current user on component mount
+  useEffect(() => {
+    const user = getCurrentUser();
+    setCurrentUser(user);
+  }, []);
+
+  // Load user's posts from localStorage
+  useEffect(() => {
+    const user = getCurrentUser();
+    const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+    const posts = getPostsByUsername(username);
+    setPhotos(posts);
+  }, [currentUser]);
+
+  // If navigated with a newPostId, open it
+  useEffect(() => {
+    const newPostId = location.state?.newPostId;
+    if (newPostId) {
+      // Refresh photos so the new post appears in the grid
+      const user = getCurrentUser();
+      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+      const posts = getPostsByUsername(username);
+      setPhotos(posts);
+
+      const post = getPostById(newPostId);
+      if (post) {
+        setSelectedPost(post);
+        setOpenPost(true);
+      }
+    }
+  }, [location.state]);
+
+  const handleOpenPost = (post) => {
+    setSelectedPost(post);
+    setOpenPost(true);
+  };
 
     const handleProfilePicChange = (e) => {
         const file = e.target.files[0];
@@ -69,26 +93,100 @@ const ProfilePage = () => {
         fetchDogs();
     }, []);
 
-    const handleOpenPost = (post) => {
-        setSelectedPost(post);
-        setOpenPost(true);
-    };
-    const handleClosePost = () => setOpenPost(false);
-    const handleEdit = () => setEditOpen(true);
-    const handleCloseEdit = () => setEditOpen(false);
-    const handleSaveEdit = (updatedPost) => {
-        setPhotos((prev) =>
-            prev.map((p) => (p.id === updatedPost.id ? updatedPost : p))
-        );
-        setSelectedPost(updatedPost);
-        handleCloseEdit();
-    };
+  const handleDelete = (postId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
+    const deleted = deletePostById(postId);
+    if (deleted) {
+      setPhotos((prev) => prev.filter(p => p.id !== postId));
+      if (selectedPost?.id === postId) {
+        setOpenPost(false);
+        setSelectedPost(null);
+      }
+    }
+  };
 
-    return (
-        <>
-            <Container
-                maxWidth='md'
-                sx={{ textAlign: "center", mt: 6, mt: 10, mb: 4 }}
+  const handleCloseEdit = () => setEditOpen(false);
+
+  const handleSaveEdit = (updatedPost) => {
+    setPhotos((prev) =>
+      prev.map((p) => (p.id === updatedPost.id ? updatedPost : p))
+    );
+    setSelectedPost(updatedPost);
+    handleCloseEdit();
+  };
+
+  // When likes update inside modal, refresh photos state with latest post from storage
+  useEffect(() => {
+    if (!selectedPost) return;
+    const latest = getPostById(selectedPost.id);
+    if (latest && latest.likes !== selectedPost.likes) {
+      setPhotos((prev) => prev.map(p => p.id === latest.id ? latest : p));
+      setSelectedPost(latest);
+    }
+  }, [openPost, selectedPost?.likes]);
+
+  return (
+    <>
+      <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10, mb: 4}}>
+      <Avatar
+  alt="User Avatar"
+  src="https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg"
+  sx={{
+    width: 120,
+    height: 120,
+    margin: "0 auto",
+    mb: 2,
+  }}
+/>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          {currentUser?.fullName || "Guest User"}
+        </Typography>
+
+        <Box
+          sx={{
+            border: "1px solid #c4c4c48e",
+            width: { xs: "90%", sm: "80%" },
+            margin: "16px auto",
+            p: 2,
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="body2">
+            {currentUser?.bio || "No bio yet. Add one to tell others about yourself!"}
+          </Typography>
+        </Box>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+        >
+          JOINED {currentUser?.joinedDate ? new Date(currentUser.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase() : 'RECENTLY'} | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
+        </Typography>
+
+        {/* Responsive Photo Grid */}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+            mt: 4,
+            gap: 2,
+            mx: "auto",
+          }}
+        >
+          {photos.map((photo) => (
+            <Box
+              key={photo.id}
+              sx={{ 
+                position: "relative", 
+                width: { xs: 150, sm: 180, md: 200 }, 
+                height: { xs: 150, sm: 180, md: 200 }, 
+                cursor: "pointer" 
+              }}
+              onClick={() => handleOpenPost(photo)}
             >
                 <Box sx={{ textAlign: "center" }}>
                     <Avatar
@@ -355,23 +453,28 @@ const ProfilePage = () => {
                         </Box>
                     ))}
                 </Box>
-            </Container>
+              </Card>
+            </Box>
+          ))}
+        </Box>
+      </Container>
 
-            <OwnSinglePost
-                open={openPost}
-                handleClose={handleClosePost}
-                post={selectedPost}
-                onEdit={handleEdit}
-            />
+      <OwnSinglePost
+        open={openPost}
+        handleClose={handleClosePost}
+        post={selectedPost}
+        onEdit={handleEdit}
+        onDelete={() => selectedPost && handleDelete(selectedPost.id)}
+      />
 
-            <OwnSinglePostEdit
-                open={editOpen}
-                handleClose={handleCloseEdit}
-                post={selectedPost}
-                onSave={handleSaveEdit}
-            />
-        </>
-    );
+      <OwnSinglePostEdit
+        open={editOpen}
+        handleClose={handleCloseEdit}
+        post={selectedPost}
+        onSave={handleSaveEdit}
+      />
+    </>
+  );
 };
 
 export default ProfilePage;

@@ -10,21 +10,57 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { addPost } from "../utils/posts";
+import { getCurrentUser } from "../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function UploadPost({ handleClose }) {
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [caption, setCaption] = React.useState("");
   const [location, setLocation] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef(null);
+  const navigate = useNavigate();
 
-  const handleImageUpload = (event) => {
+  const fileToDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsDataURL(file);
+    });
+
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedImage(URL.createObjectURL(file));
+      const dataUrl = await fileToDataUrl(file);
+      setSelectedImage(dataUrl);
     }
   };
 
   const handleAreaClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handlePost = async () => {
+    if (!selectedImage) return;
+    setIsSubmitting(true);
+    try {
+      const user = getCurrentUser() || { fullName: "Me", id: "guest" };
+      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+      const pfpUrl = "https://randomuser.me/api/portraits/men/14.jpg";
+      const newPost = addPost({
+        username,
+        pfpUrl,
+        caption,
+        location,
+        imageDataUrl: selectedImage,
+      });
+      if (handleClose) handleClose();
+      navigate(`/profilepage`, { state: { newPostId: newPost.id } });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -95,6 +131,8 @@ export default function UploadPost({ handleClose }) {
           fullWidth
           variant="outlined"
           color="primary"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
           sx={{
             mb: { xs: 2, md: 3 },
             "& .MuiOutlinedInput-root": {
@@ -232,8 +270,10 @@ export default function UploadPost({ handleClose }) {
             fontSize: { xs: '0.875rem', md: '1rem' },
             "&:hover": { bgcolor: "#3f3da0" },
           }}
+          disabled={!selectedImage || isSubmitting}
+          onClick={handlePost}
         >
-          Post
+          {isSubmitting ? "Posting..." : "Post"}
         </Button>
       </Box>
     </Container>

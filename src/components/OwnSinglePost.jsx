@@ -9,14 +9,17 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import { addCommentToPost, toggleLikeForUser } from "../utils/posts";
+import { getCurrentUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
-export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
+export default function OwnSinglePost({ open, handleClose, post, onEdit, onDelete }) {
   if (!post) return null;
 
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const currentUser = getCurrentUser() || { id: 'guest' };
+  const [liked, setLiked] = useState(Array.isArray(post.likedBy) ? post.likedBy.includes(currentUser.id) : false);
+  const [likeCount, setLikeCount] = useState(post.likes || (Array.isArray(post.likedBy) ? post.likedBy.length : 0));
   const [commentLikes, setCommentLikes] = useState({});
 
   const handleUsernameClick = (username) => {
@@ -24,11 +27,16 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
     handleClose(); // Close the modal when navigating
   };
 
-  const comments = post.comments || [];
+  const [commentInput, setCommentInput] = useState("");
+  const [commentsState, setCommentsState] = useState(post.comments || []);
 
   const handleLike = () => {
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
-    setLiked(!liked);
+    const updated = toggleLikeForUser(post.id, currentUser.id);
+    if (updated) {
+      setLikeCount(updated.likes || 0);
+      const hasLiked = Array.isArray(updated.likedBy) && updated.likedBy.includes(currentUser.id);
+      setLiked(hasLiked);
+    }
   };
 
   const handleCommentLike = (id) => {
@@ -71,6 +79,22 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
         >
           Edit
         </Button>
+
+        {onDelete && (
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={onDelete}
+            sx={{
+              "&:hover": { backgroundColor: "rgba(211, 47, 47, 0.1)" },
+              fontSize: { xs: '0.7rem', md: '0.875rem' },
+              px: { xs: 1, md: 2 }
+            }}
+          >
+            Delete
+          </Button>
+        )}
       </Box>
 
       <DialogContent
@@ -130,7 +154,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
 
           {/* Comments */}
           <Box sx={{ flex: 1, overflowY: "auto" }}>
-            {comments.map((comment) => (
+            {commentsState.map((comment) => (
               <Box key={comment.id} sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
                   <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
@@ -158,13 +182,53 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
 
           {/* Add Comment Input */}
           <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
-            <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
+            <TextField 
+              variant="outlined" 
+              size="small" 
+              placeholder="Add a comment..." 
+              fullWidth 
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (commentInput.trim()) {
+                    const user = getCurrentUser() || { fullName: 'Me' };
+                    const username = user?.fullName ? user.fullName.split(' ')[0] : 'Me';
+                    const updated = addCommentToPost(post.id, {
+                      username,
+                      pfpUrl: post.pfpUrl,
+                      text: commentInput.trim(),
+                    });
+                    if (updated) {
+                      setCommentsState(updated.comments || []);
+                      setCommentInput("");
+                    }
+                  }
+                }
+              }}
+            />
             <Button
               variant="contained"
               color="primary"
               sx={{
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
+              }}
+              disabled={!commentInput.trim()}
+              onClick={() => {
+                if (!commentInput.trim()) return;
+                const user = getCurrentUser() || { fullName: 'Me' };
+                const username = user?.fullName ? user.fullName.split(' ')[0] : 'Me';
+                const updated = addCommentToPost(post.id, {
+                  username,
+                  pfpUrl: post.pfpUrl,
+                  text: commentInput.trim(),
+                });
+                if (updated) {
+                  setCommentsState(updated.comments || []);
+                  setCommentInput("");
+                }
               }}
             >
               Post
