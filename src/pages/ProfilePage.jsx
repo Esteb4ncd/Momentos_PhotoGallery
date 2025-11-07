@@ -64,28 +64,40 @@ const ProfilePage = () => {
   // Logged-in user's profile image (use state instead of constant)
   const loggedInUserPfpUrl = profileImage;
 
-  // Fetch random dog images
+  // Load photos from localStorage and fetch random dog images if needed
   useEffect(() => {
-    const fetchDogs = async () => {
-      const urls = [];
-      for (let i = 1; i <= 9; i++) {
-        const res = await fetch("https://dog.ceo/api/breeds/image/random");
-        const data = await res.json();
-        urls.push({
-          id: i,
-          src: data.message,
-          username: "Me",
-          pfpUrl: loggedInUserPfpUrl,
-          caption: `Cute dog ${i}`,
-          date: `Oct ${10 - i}, 2025`,
-          location: "Toronto",
-          likes: Math.floor(Math.random() * 10),
-        });
-      }
-      setPhotos(urls);
-    };
-    fetchDogs();
-  }, []);
+    // Load saved posts from localStorage
+    const savedPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+    
+    if (savedPosts.length > 0) {
+      // Use saved posts
+      setPhotos(savedPosts.map(post => ({
+        ...post,
+        pfpUrl: loggedInUserPfpUrl, // Update with current profile image
+      })));
+    } else {
+      // Fetch random dog images if no saved posts
+      const fetchDogs = async () => {
+        const urls = [];
+        for (let i = 1; i <= 9; i++) {
+          const res = await fetch("https://dog.ceo/api/breeds/image/random");
+          const data = await res.json();
+          urls.push({
+            id: i,
+            src: data.message,
+            username: "Me",
+            pfpUrl: loggedInUserPfpUrl,
+            caption: `Cute dog ${i}`,
+            date: `Oct ${10 - i}, 2025`,
+            location: "Toronto",
+            likes: Math.floor(Math.random() * 10),
+          });
+        }
+        setPhotos(urls);
+      };
+      fetchDogs();
+    }
+  }, [loggedInUserPfpUrl]);
 
   const handleOpenPost = (post) => {
     setSelectedPost(post);

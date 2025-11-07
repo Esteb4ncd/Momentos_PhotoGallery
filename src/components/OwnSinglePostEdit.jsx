@@ -92,7 +92,17 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave, pro
               <Typography variant="h6">{post.username}</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+              <IconButton 
+                onClick={handleLike} 
+                color={liked ? "error" : "default"}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  "& .MuiTouchRipple-root": {
+                    borderRadius: "50%",
+                  },
+                }}
+              >
                 <FavoriteIcon />
               </IconButton>
               <Typography sx={{ ml: 1 }}>

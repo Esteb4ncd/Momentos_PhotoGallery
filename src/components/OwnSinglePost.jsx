@@ -21,13 +21,17 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentLikes, setCommentLikes] = useState({});
+  const [comments, setComments] = useState(post.comments || []);
+  const [newComment, setNewComment] = useState("");
+  
+  // Get logged-in user's info
+  const loggedInUserName = localStorage.getItem("profileName") || "Me";
+  const loggedInUserPfp = profileImage || localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
 
   const handleUsernameClick = (username) => {
     navigate(`/user/${username}`);
     handleClose(); // Close the modal when navigating
   };
-
-  const comments = post.comments || [];
 
   const handleLike = () => {
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
@@ -36,6 +40,40 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
 
   const handleCommentLike = (id) => {
     setCommentLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        id: Date.now(),
+        username: loggedInUserName,
+        pfpUrl: loggedInUserPfp,
+        text: newComment.trim(),
+      };
+      const updatedComments = [...comments, comment];
+      setComments(updatedComments);
+      setNewComment("");
+      
+      // Update post with new comment
+      if (post) {
+        post.comments = updatedComments;
+      }
+      
+      // Save to localStorage if this is a saved post
+      const savedPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+      const postIndex = savedPosts.findIndex(p => p.id === post.id);
+      if (postIndex !== -1) {
+        savedPosts[postIndex].comments = updatedComments;
+        localStorage.setItem("userPosts", JSON.stringify(savedPosts));
+      }
+    }
+  };
+
+  const handleCommentKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleAddComment();
+    }
   };
 
   return (
@@ -123,7 +161,17 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+              <IconButton 
+                onClick={handleLike} 
+                color={liked ? "error" : "default"}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  "& .MuiTouchRipple-root": {
+                    borderRadius: "50%",
+                  },
+                }}
+              >
                 <FavoriteIcon />
               </IconButton>
               <Typography sx={{ ml: 1 }}>
@@ -163,6 +211,11 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
                   size="small"
                   onClick={() => handleCommentLike(comment.id)}
                   color={commentLikes[comment.id] ? "error" : "default"}
+                  sx={{
+                    "& .MuiTouchRipple-root": {
+                      borderRadius: "50%",
+                    },
+                  }}
                 >
                   <FavoriteIcon fontSize="small" />
                 </IconButton>
@@ -172,13 +225,27 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
 
           {/* Add Comment Input */}
           <Box sx={{ display: "flex", width: "100%", gap: 1, mt: 2 }}>
-            <TextField variant="outlined" size="small" placeholder="Add a comment..." fullWidth />
+            <TextField 
+              variant="outlined" 
+              size="small" 
+              placeholder="Add a comment..." 
+              fullWidth
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyPress={handleCommentKeyPress}
+            />
             <Button
               variant="contained"
               color="primary"
+              onClick={handleAddComment}
+              disabled={!newComment.trim()}
               sx={{
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
+                "&:disabled": {
+                  backgroundColor: "rgba(0, 0, 0, 0.12)",
+                  color: "rgba(0, 0, 0, 0.26)",
+                },
               }}
             >
               Post

@@ -38,6 +38,22 @@ export default function SinglePost({ open, handleClose, post }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentLikes, setCommentLikes] = useState({});
+  const [comments, setComments] = useState(() => {
+    // Use post.comments if available, otherwise use default comments
+    if (post.comments && post.comments.length > 0) {
+      return post.comments;
+    }
+    return [
+      { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
+      { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
+      { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
+    ];
+  });
+  const [newComment, setNewComment] = useState("");
+  
+  // Get logged-in user's info (for commenting)
+  const loggedInUserName = localStorage.getItem("profileName") || "Guest";
+  const loggedInUserPfp = localStorage.getItem("profileImage") || "https://randomuser.me/api/portraits/women/10.jpg";
 
   // Get profile picture from mockUsers, fallback to post.pfpUrl if available
   const getProfilePicture = (username) => {
@@ -52,12 +68,6 @@ export default function SinglePost({ open, handleClose, post }) {
     handleClose(); // Close the modal when navigating
   };
 
-  const comments = [
-    { id: 1, username: "Sarah", pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg", text: "Beautiful shot!" },
-    { id: 2, username: "Kayla", pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg", text: "Love the colors 🌅" },
-    { id: 3, username: "Emma", pfpUrl: "https://randomuser.me/api/portraits/women/15.jpg", text: "Amazing view!" },
-  ];
-
   const handleLike = () => {
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
     setLiked(!liked);
@@ -65,6 +75,32 @@ export default function SinglePost({ open, handleClose, post }) {
 
   const handleCommentLike = (id) => {
     setCommentLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        id: Date.now(),
+        username: loggedInUserName,
+        pfpUrl: loggedInUserPfp,
+        text: newComment.trim(),
+      };
+      const updatedComments = [...comments, comment];
+      setComments(updatedComments);
+      setNewComment("");
+      
+      // Update post with new comment
+      if (post) {
+        post.comments = updatedComments;
+      }
+    }
+  };
+
+  const handleCommentKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleAddComment();
+    }
   };
 
   return (
@@ -138,7 +174,17 @@ export default function SinglePost({ open, handleClose, post }) {
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+              <IconButton 
+                onClick={handleLike} 
+                color={liked ? "error" : "default"}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  "& .MuiTouchRipple-root": {
+                    borderRadius: "50%",
+                  },
+                }}
+              >
                 <FavoriteIcon />
               </IconButton>
               <Typography sx={{ ml: 1 }}>
@@ -154,7 +200,7 @@ export default function SinglePost({ open, handleClose, post }) {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 2, fontSize: { xs: '0.7rem', md: '0.75rem' } }}>{post.date}</Typography>
 
           {/* Comments */}
-          <Box sx={{ flex: 1, overflowY: "auto" }}>
+          <Box sx={{ flex: 1, overflowY: "auto", mb: 2 }}>
             {comments.map((comment) => (
               <Box
                 key={comment.id}
@@ -173,7 +219,16 @@ export default function SinglePost({ open, handleClose, post }) {
                     <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{comment.text}</Typography>
                   </Box>
                 </Box>
-                <IconButton size="small" onClick={() => handleCommentLike(comment.id)} color={commentLikes[comment.id] ? "error" : "default"}>
+                <IconButton 
+                  size="small" 
+                  onClick={() => handleCommentLike(comment.id)} 
+                  color={commentLikes[comment.id] ? "error" : "default"}
+                  sx={{
+                    "& .MuiTouchRipple-root": {
+                      borderRadius: "50%",
+                    },
+                  }}
+                >
                   <FavoriteIcon fontSize="small" />
                 </IconButton>
               </Box>
@@ -186,7 +241,10 @@ export default function SinglePost({ open, handleClose, post }) {
               variant="outlined" 
               size="small" 
               placeholder="Add a comment..." 
-              fullWidth 
+              fullWidth
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyPress={handleCommentKeyPress}
               sx={{
                 '& .MuiInputBase-input': {
                   fontSize: { xs: '0.8rem', md: '0.875rem' }
@@ -196,12 +254,21 @@ export default function SinglePost({ open, handleClose, post }) {
             <Button 
               variant="contained"
               color="primary"
+              onClick={handleAddComment}
+              disabled={!newComment.trim()}
               sx={{
                 color: "#fff",
                 "&:hover": { bgcolor: "#3f3da0" },
+                "&:disabled": {
+                  backgroundColor: "rgba(0, 0, 0, 0.12)",
+                  color: "rgba(0, 0, 0, 0.26)",
+                },
                 fontSize: { xs: '0.75rem', md: '0.875rem' },
                 px: { xs: 2, md: 3 }
-              }}>Post</Button>
+              }}
+            >
+              Post
+            </Button>
           </Box>
         </Box>
 

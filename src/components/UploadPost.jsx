@@ -13,14 +13,63 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 export default function UploadPost({ handleClose }) {
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [selectedImageFile, setSelectedImageFile] = React.useState(null);
+  const [caption, setCaption] = React.useState("");
   const [location, setLocation] = React.useState("");
   const fileInputRef = React.useRef(null);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedImageFile(file);
       setSelectedImage(URL.createObjectURL(file));
     }
+  };
+
+  const handlePost = () => {
+    if (!selectedImage) {
+      alert("Please select an image first");
+      return;
+    }
+
+    // Convert image to data URL for storage
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imageDataUrl = reader.result;
+      
+      // Get user info
+      const username = localStorage.getItem("profileName") || "Me";
+      const pfpUrl = localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
+      
+      // Create new post
+      const newPost = {
+        id: Date.now(),
+        src: imageDataUrl,
+        imageUrl: imageDataUrl,
+        username: username,
+        pfpUrl: pfpUrl,
+        caption: caption || "No caption",
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        location: location || "Unknown",
+        likes: 0,
+        comments: [],
+      };
+
+      // Save to localStorage
+      const savedPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+      savedPosts.push(newPost);
+      localStorage.setItem("userPosts", JSON.stringify(savedPosts));
+
+      // Close modal and refresh if on profile page
+      if (handleClose) {
+        handleClose();
+      }
+      
+      // Reload the page to show new post (or you could use state management)
+      window.location.reload();
+    };
+    
+    reader.readAsDataURL(selectedImageFile);
   };
 
   const handleAreaClick = () => {
@@ -95,6 +144,8 @@ export default function UploadPost({ handleClose }) {
           fullWidth
           variant="outlined"
           color="primary"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
           sx={{
             mb: { xs: 2, md: 3 },
             "& .MuiOutlinedInput-root": {
@@ -223,6 +274,8 @@ export default function UploadPost({ handleClose }) {
         <Button
           variant="contained"
           color="primary"
+          onClick={handlePost}
+          disabled={!selectedImage}
           sx={{
             px: { xs: 3, md: 4 },
             py: { xs: 1, md: 1.2 },
@@ -231,6 +284,10 @@ export default function UploadPost({ handleClose }) {
             color: "#fff",
             fontSize: { xs: '0.875rem', md: '1rem' },
             "&:hover": { bgcolor: "#3f3da0" },
+            "&:disabled": {
+              backgroundColor: "rgba(0, 0, 0, 0.12)",
+              color: "rgba(0, 0, 0, 0.26)",
+            },
           }}
         >
           Post
