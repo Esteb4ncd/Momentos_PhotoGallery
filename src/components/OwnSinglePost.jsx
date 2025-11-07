@@ -13,8 +13,13 @@ import { addCommentToPost, toggleLikeForUser } from "../utils/posts";
 import { getCurrentUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
-export default function OwnSinglePost({ open, handleClose, post, onEdit, profileImage }) {
-  if (!post) return null;
+export default function OwnSinglePost({ open, handleClose, post, onEdit, profileImage, onDelete }) {
+  if (!post) {
+    console.log("OwnSinglePost: No post provided");
+    return null;
+  }
+  
+  console.log("OwnSinglePost: Rendering with post:", post);
 
   // Logged-in user's profile image (from props or localStorage)
   const loggedInUserPfpUrl = profileImage || localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
@@ -88,7 +93,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
       open={open}
       onClose={handleClose}
       maxWidth={false}
-      fullScreen={{ xs: true, sm: true, md: false }}
+      fullWidth
       PaperProps={{
         sx: {
           width: { xs: "100%", sm: "100%", md: "80vw" },
@@ -100,6 +105,13 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
           mx: "auto",
           boxSizing: "border-box",
           overflow: "hidden",
+          bgcolor: "background.paper",
+          m: { xs: 0, md: 2 },
+        },
+      }}
+      BackdropProps={{
+        sx: {
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
         },
       }}
     >
@@ -158,7 +170,9 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
           boxSizing: "border-box",
           overflow: "hidden",
           width: "100%",
-          height: { xs: "100vh", md: "70vh" },
+          height: { xs: "auto", md: "70vh" },
+          minHeight: { xs: "50vh", md: "70vh" },
+          bgcolor: "background.paper",
         }}
       >
         {/* Left Side: Info + Comments */}
@@ -284,23 +298,40 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
         <Box
           sx={{
             flex: 1,
-            bgcolor: "black",
+            bgcolor: "#000",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             overflow: "hidden",
             minHeight: { xs: "40vh", md: "auto" },
+            position: "relative",
+            width: "100%",
+            height: "100%",
           }}
         >
-          <img
-            src={post.imageUrl || post.src}
-            alt={post.caption || "Post image"}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            onError={(e) => {
-              console.error("Failed to load image:", post.imageUrl || post.src);
-              e.target.style.display = "none";
-            }}
-          />
+          {post.imageUrl || post.src ? (
+            <img
+              src={post.imageUrl || post.src}
+              alt={post.caption || "Post image"}
+              style={{ 
+                width: "100%", 
+                height: "100%", 
+                objectFit: "contain",
+                display: "block",
+              }}
+              onLoad={() => {
+                console.log("Image loaded successfully");
+              }}
+              onError={(e) => {
+                console.error("Failed to load image:", post.imageUrl || post.src);
+                e.target.style.display = "none";
+              }}
+            />
+          ) : (
+            <Typography sx={{ color: "white", textAlign: "center", p: 2 }}>
+              No image available
+            </Typography>
+          )}
         </Box>
       </DialogContent>
     </Dialog>

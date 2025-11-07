@@ -28,6 +28,7 @@ const ProfilePage = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const location = useLocation();
 
   // Profile info state
   const [profileImage, setProfileImage] = useState("https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg");
@@ -70,8 +71,12 @@ const ProfilePage = () => {
 
   // Load photos from localStorage and fetch random dog images if needed
   useEffect(() => {
-    // Load saved posts from localStorage
-    const savedPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+    // Get current user to load their posts
+    const user = getCurrentUser();
+    const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+    
+    // Load saved posts using the posts utility
+    const savedPosts = getPostsByUsername(username);
     
     if (savedPosts.length > 0) {
       // Use saved posts
@@ -79,6 +84,17 @@ const ProfilePage = () => {
         ...post,
         pfpUrl: loggedInUserPfpUrl, // Update with current profile image
       })));
+      
+      // If navigating from upload with a new post ID, open it
+      if (location.state?.newPostId) {
+        const newPost = savedPosts.find(p => p.id === location.state.newPostId);
+        if (newPost) {
+          setSelectedPost({ ...newPost, pfpUrl: loggedInUserPfpUrl });
+          setOpenPost(true);
+          // Clear the state to avoid reopening on re-render
+          window.history.replaceState({}, document.title);
+        }
+      }
     } else {
       // Fetch random dog images if no saved posts
       const fetchDogs = async () => {
@@ -101,7 +117,7 @@ const ProfilePage = () => {
       };
       fetchDogs();
     }
-  }, [loggedInUserPfpUrl]);
+  }, [loggedInUserPfpUrl, location.state]);
 
   const handleOpenPost = (post) => {
     setSelectedPost(post);
@@ -352,6 +368,7 @@ const ProfilePage = () => {
         handleClose={handleClosePost}
         post={selectedPost}
         onEdit={handleEdit}
+        onDelete={handleDelete}
         profileImage={profileImage}
       />
 
