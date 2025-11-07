@@ -117,7 +117,7 @@ const UserProfile = () => {
           console.log('Random User API image failed, using fallback');
           // Determine gender for fallback
           const gender = username.includes('esteban') ? 'male' : 'female';
-          e.target.src = getFallbackImage(gender);
+          e.target.src = getFallbackImage(gender, username);
         }}
       />
       <Typography variant="h6" sx={{ fontWeight: "bold" }}>

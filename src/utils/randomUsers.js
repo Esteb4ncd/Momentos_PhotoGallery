@@ -124,37 +124,68 @@ const FALLBACK_IMAGES = {
 };
 
 /**
- * Simple function to get a random profile image URL
+ * Generate a deterministic ID from a username (hash function)
+ * @param {string} username - The username to hash
+ * @returns {number} A number between 1 and 99
+ */
+const hashUsernameToId = (username) => {
+  let hash = 0;
+  for (let i = 0; i < username.length; i++) {
+    const char = username.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash % 99) + 1; // Return a number between 1 and 99
+};
+
+/**
+ * Get a deterministic profile image URL based on username and gender
+ * @param {string} username - The username (used to generate consistent ID)
+ * @param {string} gender - 'male' or 'female'
+ * @returns {string} Profile image URL
+ */
+export const getDeterministicPfpUrl = (username, gender = 'female') => {
+  const id = hashUsernameToId(username);
+  const sources = IMAGE_SOURCES[gender] || IMAGE_SOURCES.female;
+  return sources[0](id);
+};
+
+/**
+ * Simple function to get a random profile image URL (deprecated - use getDeterministicPfpUrl)
  * @param {string} gender - 'male' or 'female'
  * @returns {string} Random profile image URL
  */
 export const getRandomPfpUrl = (gender = 'female') => {
   const randomId = Math.floor(Math.random() * 99) + 1;
   const sources = IMAGE_SOURCES[gender] || IMAGE_SOURCES.female;
-  
-  // Try the first source (Random User API)
-  const primaryUrl = sources[0](randomId);
-  console.log(`Generated random profile URL: ${primaryUrl}`);
-  
-  return primaryUrl;
+  return sources[0](randomId);
 };
 
-// Function to get a fallback image
-export const getFallbackImage = (gender = 'female') => {
+// Function to get a deterministic fallback image based on username
+export const getFallbackImage = (gender = 'female', username = '') => {
   const images = FALLBACK_IMAGES[gender] || FALLBACK_IMAGES.female;
-  const randomIndex = Math.floor(Math.random() * images.length);
-  return images[randomIndex];
+  // Use username hash to pick a consistent fallback image
+  const index = username ? hashUsernameToId(username) % images.length : 0;
+  return images[index];
 };
 
-// Generate consistent profile images for each user
+// Generate consistent profile images for each user using deterministic IDs
 const USER_PROFILE_IMAGES = {
-  sarahwang: getRandomPfpUrl('female'),
-  estebancd: getRandomPfpUrl('male'),
-  emmajarnie: getRandomPfpUrl('female'),
-  kaylaluo: getRandomPfpUrl('female'),
+  sarahwang: getDeterministicPfpUrl('sarahwang', 'female'),
+  estebancd: getDeterministicPfpUrl('estebancd', 'male'),
+  emmajarnie: getDeterministicPfpUrl('emmajarnie', 'female'),
+  kaylaluo: getDeterministicPfpUrl('kaylaluo', 'female'),
 };
 
 // Function to get consistent profile image for a user
 export const getUserProfileImage = (username) => {
-  return USER_PROFILE_IMAGES[username] || getFallbackImage('female');
+  // If we have a cached value, use it
+  if (USER_PROFILE_IMAGES[username]) {
+    return USER_PROFILE_IMAGES[username];
+  }
+  
+  // Otherwise, generate deterministically based on username
+  // Determine gender based on username
+  const gender = username.includes('esteban') || username.includes('male') ? 'male' : 'female';
+  return getDeterministicPfpUrl(username, gender);
 };

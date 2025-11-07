@@ -10,27 +10,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getFallbackImage } from "../utils/randomUsers";
-
-// Same mockUsers data as UserProfile to ensure consistent profile images
-const mockUsers = {
-  sarahwang: {
-    username: "sarahwang",
-    pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-  },
-  estebancd: {
-    username: "estebancd",
-    pfpUrl: "https://randomuser.me/api/portraits/men/15.jpg",
-  },
-  emmajarnie: {
-    username: "emmajarnie",
-    pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
-  },
-  kaylaluo: {
-    username: "kaylaluo",
-    pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
-  },
-};
+import { getUserProfileImage, getFallbackImage } from "../utils/randomUsers";
 
 export default function SinglePost({ open, handleClose, post }) {
   if (!post) return null;
@@ -56,12 +36,14 @@ export default function SinglePost({ open, handleClose, post }) {
   const loggedInUserName = localStorage.getItem("profileName") || "Guest";
   const loggedInUserPfp = localStorage.getItem("profileImage") || "https://randomuser.me/api/portraits/women/10.jpg";
 
-  // Get profile picture from mockUsers, fallback to post.pfpUrl if available
+  // Get profile picture using the same function as UserProfile to ensure consistency
   const getProfilePicture = (username) => {
-    if (mockUsers[username]) {
-      return mockUsers[username].pfpUrl;
+    // Use the pfpUrl from the post if available (from samplePhotos)
+    if (post.pfpUrl) {
+      return post.pfpUrl;
     }
-    return post.pfpUrl || "https://randomuser.me/api/portraits/women/10.jpg"; // fallback
+    // Otherwise, use getUserProfileImage which generates deterministic images
+    return getUserProfileImage(username);
   };
 
   const handleUsernameClick = (username) => {
@@ -167,7 +149,7 @@ export default function SinglePost({ open, handleClose, post }) {
                 sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }}
                 onError={(e) => {
                   const gender = post.username.includes('esteban') ? 'male' : 'female';
-                  e.target.src = getFallbackImage(gender);
+                  e.target.src = getFallbackImage(gender, post.username);
                 }}
               />
               <Typography 
