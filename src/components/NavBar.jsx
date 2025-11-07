@@ -63,7 +63,8 @@ export default function NavBar() {
                         p: 2,
                     }}>
                     <img 
-                        src="/Momentos_Wordmark.png" 
+                    //                         src="/Momentos_Wordmark.png" 
+                        src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                         alt="Momentos" 
                         style={{ 
                             height: '40px',

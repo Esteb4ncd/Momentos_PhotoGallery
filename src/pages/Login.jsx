@@ -14,7 +14,8 @@ const Login = () => {
       {/* Left Section - Branding */}
       <Box sx={{ 
         flex: { xs: '0 0 30%', md: '0 0 50%' },
-        backgroundImage: 'url(/momentos_loginpic2.jpg)',
+        //         backgroundImage: 'url(/momentos_loginpic2.jpg)',
+        backgroundImage: `url(${import.meta.env.BASE_URL}momentos_loginpic2.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
@@ -25,7 +26,8 @@ const Login = () => {
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <img 
-            src="/Momentos_Wordmark.svg" 
+          // src="/Momentos_Wordmark.svg" 
+            src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             alt="Momentos" 
             style={{ 
               height: 'auto',

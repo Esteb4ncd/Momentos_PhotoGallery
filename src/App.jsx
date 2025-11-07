@@ -18,11 +18,16 @@ const theme = createTheme({
       main: '#4f40b4',
     },
   },
+  typography: {
+    fontFamily: '"Lilita One", system-ui, Avenir, Helvetica, Arial, sans-serif',
+  },
 });
 
 function AppContent() {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  // Remove the base path from location.pathname for comparison
+  const pathWithoutBase = location.pathname.replace(import.meta.env.BASE_URL, '') || '/';
+  const isLoginPage = pathWithoutBase === '/login' || pathWithoutBase === '/';
 
   return (
     <>
@@ -44,7 +49,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ backgroundColor: 'white', minHeight: '100vh', margin: 0, padding: 0 }}>
-        <Router>
+        <Router basename={import.meta.env.BASE_URL}>
           <AppContent />
         </Router>
       </Box>
