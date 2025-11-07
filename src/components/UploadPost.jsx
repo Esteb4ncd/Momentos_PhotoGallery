@@ -23,6 +23,11 @@ export default function UploadPost({ handleClose }) {
   const fileInputRef = React.useRef(null);
   const navigate = useNavigate();
 
+  // Get current user's profile image and name
+  const currentUser = getCurrentUser();
+  const profileImage = localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
+  const profileName = localStorage.getItem("profileName") || currentUser?.fullName || "Me";
+
   const compressImage = (file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -86,7 +91,8 @@ export default function UploadPost({ handleClose }) {
     try {
       const user = getCurrentUser() || { fullName: "Me", id: "guest" };
       const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
-      const pfpUrl = "https://randomuser.me/api/portraits/men/14.jpg";
+      // Use the current user's profile image
+      const pfpUrl = profileImage;
       
       // Create the post
       const newPost = addPost({
@@ -153,11 +159,11 @@ export default function UploadPost({ handleClose }) {
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Avatar
-              src="https://randomuser.me/api/portraits/men/14.jpg"
+              src={profileImage}
               sx={{ mr: { xs: 1, md: 2 }, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }}
             />
             <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: { xs: '1rem', md: '1.25rem' } }}>
-              Username
+              {profileName}
             </Typography>
           </Box>
           {handleClose && (
