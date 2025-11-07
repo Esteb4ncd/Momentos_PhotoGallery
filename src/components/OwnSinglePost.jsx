@@ -39,15 +39,16 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="md"
-      fullWidth
-      fullScreen={{ xs: true, sm: true, md: false }}
+      maxWidth={false}
       PaperProps={{
         sx: {
-          borderRadius: { xs: 0, sm: 0, md: 3 },
-          maxHeight: { xs: "100vh", sm: "100vh", md: "90vh" },
+          width: "80vw",
+          maxWidth: "1000px",
+          borderRadius: 3,
+          maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
+          mx: "auto",
           overflow: "hidden",
         },
       }}
@@ -59,14 +60,24 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
         </IconButton>
 
         <Button
-          variant="outlined"
+          variant="contained"
           size="small"
           color="primary"
           onClick={onEdit}
           sx={{
-            "&:hover": { backgroundColor: "rgba(79, 64, 180, 0.1)" },
+            backgroundColor: "#4f40b4",
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            "&:hover": { 
+              backgroundColor: "#3d2f9e",
+            },
             fontSize: { xs: '0.7rem', md: '0.875rem' },
-            px: { xs: 1, md: 2 }
+            px: { xs: 1.5, md: 2.5 },
+            py: { xs: 0.5, md: 0.75 }
           }}
         >
           Edit
@@ -76,10 +87,10 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
       <DialogContent
         sx={{
           display: "flex",
-          flexDirection: { xs: "column-reverse", md: "row" },
+          flexDirection: { xs: "column", md: "row" },
           p: 0,
           width: "100%",
-          height: { xs: "100vh", md: "70vh" },
+          height: "70vh",
         }}
       >
         {/* Left Side: Info + Comments */}

@@ -11,6 +11,26 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Same mockUsers data as UserProfile to ensure consistent profile images
+const mockUsers = {
+  sarahwang: {
+    username: "sarahwang",
+    pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
+  },
+  estebancd: {
+    username: "estebancd",
+    pfpUrl: "https://randomuser.me/api/portraits/men/15.jpg",
+  },
+  emmajarnie: {
+    username: "emmajarnie",
+    pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
+  },
+  kaylaluo: {
+    username: "kaylaluo",
+    pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
+  },
+};
+
 export default function SinglePost({ open, handleClose, post }) {
   if (!post) return null;
 
@@ -18,6 +38,14 @@ export default function SinglePost({ open, handleClose, post }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentLikes, setCommentLikes] = useState({});
+
+  // Get profile picture from mockUsers, fallback to post.pfpUrl if available
+  const getProfilePicture = (username) => {
+    if (mockUsers[username]) {
+      return mockUsers[username].pfpUrl;
+    }
+    return post.pfpUrl || "https://randomuser.me/api/portraits/women/10.jpg"; // fallback
+  };
 
   const handleUsernameClick = (username) => {
     navigate(`/user/${username}`);
@@ -97,7 +125,7 @@ export default function SinglePost({ open, handleClose, post }) {
           {/* Username + Like */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
             <Box sx={{ display: "flex", alignItems: "center", flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
-              <Avatar src={post.pfpUrl} sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }} />
+              <Avatar src={getProfilePicture(post.username)} sx={{ mr: 1, width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }} />
               <Typography 
                 variant="h6" 
                 sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" }, fontSize: { xs: '1rem', md: '1.25rem' } }}
