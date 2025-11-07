@@ -11,8 +11,11 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
+export default function OwnSinglePost({ open, handleClose, post, onEdit, profileImage }) {
   if (!post) return null;
+
+  // Logged-in user's profile image (from props or localStorage)
+  const loggedInUserPfpUrl = profileImage || localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
 
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
@@ -107,7 +110,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit }) {
           {/* Username + Like */}
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
+              <Avatar src={loggedInUserPfpUrl} sx={{ mr: 1 }} />
               <Typography 
                 variant="h6" 
                 sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}

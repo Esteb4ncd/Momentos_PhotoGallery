@@ -10,8 +10,11 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
+export default function OwnSinglePostEdit({ open, handleClose, post, onSave, profileImage }) {
   if (!post) return null;
+
+  // Logged-in user's profile image (from props or localStorage)
+  const loggedInUserPfpUrl = profileImage || localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
 
   const [caption, setCaption] = useState(post.caption);
   const [location, setLocation] = useState(post.location);
@@ -85,7 +88,7 @@ export default function OwnSinglePostEdit({ open, handleClose, post, onSave }) {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar src={post.pfpUrl} sx={{ mr: 1 }} />
+              <Avatar src={loggedInUserPfpUrl} sx={{ mr: 1 }} />
               <Typography variant="h6">{post.username}</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>

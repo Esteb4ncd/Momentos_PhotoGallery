@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Box,
@@ -7,7 +7,15 @@ import {
   Button,
   Card,
   CardMedia,
+  TextField,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
 
@@ -16,6 +24,45 @@ const ProfilePage = () => {
   const [openPost, setOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
+
+  // Profile info state
+  const [profileImage, setProfileImage] = useState("https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg");
+  const [profileName, setProfileName] = useState("Yo Mama");
+  const [profileBio, setProfileBio] = useState("Proud dog lover");
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [showEditButton, setShowEditButton] = useState(false);
+  const profileSectionRef = useRef(null);
+
+  // Hide button when clicking outside profile section
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showEditButton && profileSectionRef.current && !profileSectionRef.current.contains(event.target)) {
+        setShowEditButton(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEditButton]);
+
+  // Load profile data from localStorage on mount
+  useEffect(() => {
+    const savedProfileImage = localStorage.getItem("profileImage");
+    const savedProfileName = localStorage.getItem("profileName");
+    const savedProfileBio = localStorage.getItem("profileBio");
+
+    if (savedProfileImage) setProfileImage(savedProfileImage);
+    if (savedProfileName) setProfileName(savedProfileName);
+    if (savedProfileBio) setProfileBio(savedProfileBio);
+  }, []);
+
+  // Logged-in user's profile image (use state instead of constant)
+  const loggedInUserPfpUrl = profileImage;
 
   // Fetch random dog images
   useEffect(() => {
@@ -28,7 +75,7 @@ const ProfilePage = () => {
           id: i,
           src: data.message,
           username: "Me",
-          pfpUrl: `https://randomuser.me/api/portraits/men/${10 + i}.jpg`,
+          pfpUrl: loggedInUserPfpUrl,
           caption: `Cute dog ${i}`,
           date: `Oct ${10 - i}, 2025`,
           location: "Toronto",
@@ -59,33 +106,127 @@ const ProfilePage = () => {
     handleCloseEdit();
   };
 
+  const handleEditProfile = () => {
+    setEditImageUrl(profileImage);
+    setEditName(profileName);
+    setEditBio(profileBio);
+    setIsEditingProfile(true);
+    setShowEditButton(false);
+  };
+
+  const handleSaveProfile = () => {
+    setProfileImage(editImageUrl);
+    setProfileName(editName);
+    setProfileBio(editBio);
+    
+    // Save to localStorage
+    localStorage.setItem("profileImage", editImageUrl);
+    localStorage.setItem("profileName", editName);
+    localStorage.setItem("profileBio", editBio);
+    
+    setIsEditingProfile(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingProfile(false);
+    setShowEditButton(false);
+  };
+
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Check if file is an image
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      // Use FileReader to convert file to data URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditImageUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       <Container maxWidth="md" sx={{ textAlign: "center", mt: 6 , mt: 10, mb: 4}}>
-      <Avatar
-  alt="User Avatar"
-  src="https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg"
-  sx={{
-    width: 120,
-    height: 120,
-    margin: "0 auto",
-    mb: 2,
-  }}
-/>
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          Yo Mama
+        <Box ref={profileSectionRef}>
+        <Avatar
+          alt="User Avatar"
+          src={profileImage}
+          onClick={() => setShowEditButton(true)}
+          sx={{
+            width: 120,
+            height: 120,
+            margin: "0 auto",
+            mb: 2,
+            cursor: "pointer",
+            "&:hover": {
+              opacity: 0.8,
+            },
+          }}
+        />
+        
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: "bold", 
+            mb: 1,
+            cursor: "pointer",
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          }}
+          onClick={() => setShowEditButton(true)}
+        >
+          {profileName}
         </Typography>
 
         <Box
+          onClick={() => setShowEditButton(true)}
           sx={{
             border: "1px solid #c4c4c48e",
             width: { xs: "90%", sm: "80%" },
             margin: "16px auto",
             p: 2,
             borderRadius: 1,
+            cursor: "pointer",
+            "&:hover": {
+              borderColor: "#4f40b4",
+              backgroundColor: "rgba(79, 64, 180, 0.05)",
+            },
           }}
         >
-          <Typography variant="body2">Proud dog lover </Typography>
+          <Typography variant="body2">{profileBio}</Typography>
+        </Box>
+
+        {showEditButton && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<EditIcon />}
+            onClick={handleEditProfile}
+            sx={{
+              mt: 2,
+              mb: 2,
+              backgroundColor: "#4f40b4",
+              "&:hover": {
+                backgroundColor: "#3d2f9e",
+              },
+              animation: "fadeIn 0.3s ease-in",
+              "@keyframes fadeIn": {
+                from: { opacity: 0, transform: "translateY(-10px)" },
+                to: { opacity: 1, transform: "translateY(0)" },
+              },
+            }}
+          >
+            Edit Profile
+          </Button>
+        )}
         </Box>
 
         <Typography
@@ -185,6 +326,7 @@ const ProfilePage = () => {
         handleClose={handleClosePost}
         post={selectedPost}
         onEdit={handleEdit}
+        profileImage={profileImage}
       />
 
       <OwnSinglePostEdit
@@ -192,7 +334,100 @@ const ProfilePage = () => {
         handleClose={handleCloseEdit}
         post={selectedPost}
         onSave={handleSaveEdit}
+        profileImage={profileImage}
       />
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={isEditingProfile} onClose={handleCancelEdit} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 2 }}>
+            {/* Profile Image Upload */}
+            <Box>
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: "medium" }}>
+                Profile Image
+              </Typography>
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                sx={{
+                  mb: 2,
+                  py: 1.5,
+                  borderColor: "#4f40b4",
+                  color: "#4f40b4",
+                  "&:hover": {
+                    borderColor: "#3d2f9e",
+                    backgroundColor: "rgba(79, 64, 180, 0.1)",
+                  },
+                }}
+              >
+                Upload Photo
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                />
+              </Button>
+              
+              <TextField
+                label="Or enter image URL"
+                value={editImageUrl}
+                onChange={(e) => setEditImageUrl(e.target.value)}
+                fullWidth
+                placeholder="Paste an image URL"
+                helperText="Upload a photo or paste an image URL"
+                size="small"
+              />
+            </Box>
+            
+            {/* Preview */}
+            {editImageUrl && (
+              <Box sx={{ textAlign: "center" }}>
+                <Avatar
+                  src={editImageUrl}
+                  sx={{ width: 100, height: 100, margin: "0 auto" }}
+                />
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                  Preview
+                </Typography>
+              </Box>
+            )}
+
+            {/* Name */}
+            <TextField
+              label="Name"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              fullWidth
+              placeholder="Enter your name"
+            />
+
+            {/* Bio */}
+            <TextField
+              label="Bio"
+              value={editBio}
+              onChange={(e) => setEditBio(e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+              placeholder="Tell us about yourself"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelEdit}>Cancel</Button>
+          <Button
+            onClick={handleSaveProfile}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
