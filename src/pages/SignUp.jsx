@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button, CircularProgress } from '@mui/material';
-import { findUser, setCurrentUser } from '../utils/auth';
+import { Typography, Box, TextField, Button, Link, CircularProgress } from '@mui/material';
+import { saveUser, emailExists, setCurrentUser } from '../utils/auth';
 
-const Login = () => {
+const SignUp = () => {
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  // Load saved credentials on component mount
-  useEffect(() => {
-    const savedCredentials = localStorage.getItem('momentosRememberMe');
-    if (savedCredentials) {
-      const { email: savedEmail, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
-      setEmail(savedEmail || '');
-      setRememberMe(savedRememberMe || false);
-    }
-  }, []);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,10 +20,18 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    if (!fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (fullName.trim().length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters';
+    }
+
     if (!email.trim()) {
-      newErrors.email = 'Email/Username is required';
+      newErrors.email = 'Email is required';
     } else if (!validateEmail(email)) {
       newErrors.email = 'Please enter a valid email address';
+    } else if (emailExists(email)) {
+      newErrors.email = 'An account with this email already exists';
     }
 
     if (!password.trim()) {
@@ -41,63 +40,53 @@ const Login = () => {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
+    if (!confirmPassword.trim()) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     if (validateForm()) {
       setIsLoading(true);
       
       try {
-        // Simulate authentication delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Simulate signup delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Try to find the user
-        const user = findUser(email, password);
-        
-        if (!user) {
-          // Account not found or incorrect password
-          setErrors({ general: 'Account not found. Please check your email and password.' });
-          setIsLoading(false);
-          return;
-        }
+        // Save the new user account
+        const newUser = saveUser({
+          fullName,
+          email,
+          password
+        });
         
         // Set as current user
-        setCurrentUser(user);
+        setCurrentUser(newUser);
         
-        // Handle remember me functionality
-        if (rememberMe) {
-          localStorage.setItem('momentosRememberMe', JSON.stringify({
-            email: email,
-            rememberMe: true
-          }));
-        } else {
-          localStorage.removeItem('momentosRememberMe');
-        }
-        
-        console.log('Login successful:', user.fullName);
+        console.log('SignUp successful:', { fullName, email });
         
         // Navigate to profile page
         navigate('/profilepage');
       } catch (error) {
-        console.error('Login error:', error);
-        setErrors({ general: 'Login failed. Please try again.' });
+        console.error('SignUp error:', error);
+        setErrors({ general: 'Signup failed. Please try again.' });
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const handleOpenReset = () => {};
-
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {/* Left Section - Branding */}
       <Box sx={{ 
         flex: { xs: '0 0 30%', md: '0 0 50%' },
-        //         backgroundImage: 'url(/momentos_loginpic2.jpg)',
-        backgroundImage: `url(${import.meta.env.BASE_URL}momentos_loginpic2.jpg)`,
+        backgroundImage: 'url(/momentos_loginpic2.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
@@ -108,8 +97,7 @@ const Login = () => {
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <img 
-src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
-
+            src="/Momentos_Wordmark.png" 
             alt="Momentos" 
             style={{ 
               height: 'auto',
@@ -133,7 +121,7 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
         </Box>
       </Box>
       
-      {/* Right Section - Login Form */}
+      {/* Right Section - SignUp Form */}
       <Box sx={{ 
         flex: { xs: '1 1 auto', md: '0 0 50%' },
         backgroundColor: 'white',
@@ -153,7 +141,7 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               mb: 2
             }}
           >
-            LOGIN
+            SIGN UP
           </Typography>
           <Typography 
             variant="h6" 
@@ -164,7 +152,7 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               mb: 4
             }}
           >
-            Welcome back! Please login to your account
+            Create your account to get started
           </Typography>
           
           {/* Input Fields */}
@@ -177,10 +165,55 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                 mb: 1
               }}
             >
-              EMAIL/USERNAME
+              FULL NAME
             </Typography>
             <TextField
               fullWidth
+              variant="outlined"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              error={!!errors.fullName}
+              helperText={errors.fullName}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px',
+                  border: errors.fullName ? '1px solid #f44336' : '1px solid black',
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                  '&:hover fieldset': {
+                    border: 'none',
+                  },
+                  '&.Mui-focused fieldset': {
+                    border: 'none',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
+                },
+              }}
+            />
+          </Box>
+          
+          <Box sx={{ textAlign: 'left', mb: 3 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                fontWeight: 'bold',
+                color: 'black',
+                mb: 1
+              }}
+            >
+              EMAIL
+            </Typography>
+            <TextField
+              fullWidth
+              type="email"
               variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -257,53 +290,49 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             />
           </Box>
           
-          {/* Remember Me and Forgot Password */}
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            mb: 4
-          }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  sx={{
-                    color: 'black',
-                    '&.Mui-checked': {
-                      color: 'black',
-                    },
-                    padding: '4px 8px 4px 0',
-                  }}
-                />
-              }
-              label={
-                <Typography 
-                  variant="body2" 
-                  sx={{ 
-                    fontWeight: 'bold',
-                    color: 'black'
-                  }}
-                >
-                  Remember me
-                </Typography>
-              }
-            />
-            <Link
-              sx={{
-                color: 'black',
-                textDecoration: 'none',
+          <Box sx={{ textAlign: 'left', mb: 4 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
                 fontWeight: 'bold',
-                fontSize: '0.875rem',
-                '&:hover': {
-                  textDecoration: 'underline',
+                color: 'black',
+                mb: 1
+              }}
+            >
+              CONFIRM PASSWORD
+            </Typography>
+            <TextField
+              fullWidth
+              type="password"
+              variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px',
+                  border: errors.confirmPassword ? '1px solid #f44336' : '1px solid black',
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                  '&:hover fieldset': {
+                    border: 'none',
+                  },
+                  '&.Mui-focused fieldset': {
+                    border: 'none',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '12px 14px',
+                },
+                '& .MuiFormHelperText-root': {
+                  color: '#f44336',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
                 },
               }}
-              onClick={handleOpenReset}
-            >
-              Forgot password?
-            </Link>
+            />
           </Box>
           
           {/* General Error Display */}
@@ -325,12 +354,12 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             </Typography>
           )}
           
-          {/* Login Button */}
+          {/* Sign Up Button */}
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={handleLogin}
+            onClick={handleSignUp}
             disabled={isLoading}
             sx={{
               color: 'white',
@@ -352,14 +381,14 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             {isLoading ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <CircularProgress size={20} sx={{ color: '#666666' }} />
-                <span>Logging in...</span>
+                <span>Creating account...</span>
               </Box>
             ) : (
-              'LOGIN'
+              'SIGN UP'
             )}
           </Button>
           
-          {/* Sign Up Link */}
+          {/* Login Link */}
           <Typography 
             variant="body2" 
             sx={{ 
@@ -368,9 +397,9 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               textAlign: 'center'
             }}
           >
-            Don't have an account?{' '}
+            Already have an account?{' '}
             <Link
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/login')}
               sx={{
                 color: 'black',
                 textDecoration: 'none',
@@ -380,14 +409,13 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                 },
               }}
             >
-              SIGN UP
+              LOGIN
             </Link>
           </Typography>
         </Box>
       </Box>
     </Box>
-
   );
 };
 
-export default Login;
+export default SignUp;

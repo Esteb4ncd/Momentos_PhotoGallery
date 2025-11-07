@@ -9,6 +9,8 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import { addCommentToPost, toggleLikeForUser } from "../utils/posts";
+import { getCurrentUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function OwnSinglePost({ open, handleClose, post, onEdit, profileImage }) {
@@ -18,8 +20,9 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
   const loggedInUserPfpUrl = profileImage || localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
 
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const currentUser = getCurrentUser() || { id: 'guest' };
+  const [liked, setLiked] = useState(Array.isArray(post.likedBy) ? post.likedBy.includes(currentUser.id) : false);
+  const [likeCount, setLikeCount] = useState(post.likes || (Array.isArray(post.likedBy) ? post.likedBy.length : 0));
   const [commentLikes, setCommentLikes] = useState({});
   const [comments, setComments] = useState(post.comments || []);
   const [newComment, setNewComment] = useState("");
@@ -34,8 +37,12 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
   };
 
   const handleLike = () => {
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
-    setLiked(!liked);
+    const updated = toggleLikeForUser(post.id, currentUser.id);
+    if (updated) {
+      setLikeCount(updated.likes || 0);
+      const hasLiked = Array.isArray(updated.likedBy) && updated.likedBy.includes(currentUser.id);
+      setLiked(hasLiked);
+    }
   };
 
   const handleCommentLike = (id) => {
@@ -123,6 +130,22 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
         >
           Edit
         </Button>
+
+        {onDelete && (
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={onDelete}
+            sx={{
+              "&:hover": { backgroundColor: "rgba(211, 47, 47, 0.1)" },
+              fontSize: { xs: '0.7rem', md: '0.875rem' },
+              px: { xs: 1, md: 2 }
+            }}
+          >
+            Delete
+          </Button>
+        )}
       </Box>
 
       <DialogContent
@@ -192,7 +215,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
 
           {/* Comments */}
           <Box sx={{ flex: 1, overflowY: "auto" }}>
-            {comments.map((comment) => (
+            {commentsState.map((comment) => (
               <Box key={comment.id} sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
                   <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />

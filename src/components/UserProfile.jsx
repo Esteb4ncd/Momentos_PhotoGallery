@@ -11,37 +11,52 @@ import { useNavigate, useParams } from "react-router-dom";
 import { samplePhotos } from "../data/samplePhotos";
 import SinglePost from "./SinglePost";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { getFallbackImage, getUserProfileImage } from "../utils/randomUsers";
 
-const mockUsers = {
-  sarahwang: {
-    username: "sarahwang",
-    bio: "Photography enthusiast capturing life's beautiful moments 📸",
-    joined: "January 2023",
-    pfpUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-    photos: samplePhotos.filter((photo) => photo.username === "sarahwang"),
-  },
-  estebancd: {
-    username: "estebancd",
-    bio: "Adventure seeker and nature lover 🌲",
-    joined: "March 2023",
-    pfpUrl: "https://randomuser.me/api/portraits/men/15.jpg",
-    photos: samplePhotos.filter((photo) => photo.username === "estebancd"),
-  },
-  emmajarnie: {
-    username: "emmajarnie",
-    bio: "Artist and creative soul expressing through photography 🎨",
-    joined: "June 2023",
-    pfpUrl: "https://randomuser.me/api/portraits/women/12.jpg",
-    photos: samplePhotos.filter((photo) => photo.username === "emmajarnie"),
-  },
-  kaylaluo: {
-    username: "kaylaluo",
-    bio: "Tech enthusiast and photography hobbyist 💻📷",
-    joined: "September 2023",
-    pfpUrl: "https://randomuser.me/api/portraits/women/8.jpg",
-    photos: samplePhotos.filter((photo) => photo.username === "kaylaluo"),
-  },
+// Generate random profile images once when the module loads
+const generateMockUsers = () => {
+  const users = {
+    sarahwang: {
+      username: "sarahwang",
+      bio: "Photography enthusiast capturing life's beautiful moments 📸",
+      joined: "January 2023",
+      pfpUrl: getUserProfileImage('sarahwang'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "sarahwang"),
+    },
+    estebancd: {
+      username: "estebancd",
+      bio: "Adventure seeker and nature lover 🌲",
+      joined: "March 2023",
+      pfpUrl: getUserProfileImage('estebancd'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "estebancd"),
+    },
+    emmajarnie: {
+      username: "emmajarnie",
+      bio: "Artist and creative soul expressing through photography 🎨",
+      joined: "June 2023",
+      pfpUrl: getUserProfileImage('emmajarnie'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "emmajarnie"),
+    },
+    kaylaluo: {
+      username: "kaylaluo",
+      bio: "Tech enthusiast and photography hobbyist 💻📷",
+      joined: "September 2023",
+      pfpUrl: getUserProfileImage('kaylaluo'), // Consistent profile image
+      photos: samplePhotos.filter((photo) => photo.username === "kaylaluo"),
+    },
+  };
+  
+  // Debug: Log the generated URLs
+  console.log('Generated profile URLs:', Object.entries(users).map(([username, user]) => ({
+    username,
+    pfpUrl: user.pfpUrl
+  })));
+  
+  return users;
 };
+
+// Generate the mock users once
+const mockUsers = generateMockUsers();
 
 const UserProfile = () => {
   const { username } = useParams();
@@ -98,6 +113,12 @@ const UserProfile = () => {
         alt="User Avatar"
         src={userData.pfpUrl}
         sx={{ width: 120, height: 120, margin: "0 auto", mb: 2 }}
+        onError={(e) => {
+          console.log('Random User API image failed, using fallback');
+          // Determine gender for fallback
+          const gender = username.includes('esteban') ? 'male' : 'female';
+          e.target.src = getFallbackImage(gender);
+        }}
       />
       <Typography variant="h6" sx={{ fontWeight: "bold" }}>
         {userData.username}

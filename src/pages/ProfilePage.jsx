@@ -18,12 +18,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import OwnSinglePost from "../components/OwnSinglePost";
 import OwnSinglePostEdit from "../components/OwnSinglePostEdit";
+import { getCurrentUser } from "../utils/auth";
+import { getPostsByUsername, getPostById, deletePostById } from "../utils/posts";
+import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
   const [photos, setPhotos] = useState([]);
   const [openPost, setOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // Profile info state
   const [profileImage, setProfileImage] = useState("https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg");
@@ -103,17 +107,25 @@ const ProfilePage = () => {
     setSelectedPost(post);
     setOpenPost(true);
   };
-
-  const handleClosePost = () => setOpenPost(false);
-
+  const handleClosePost = () => {
+    setOpenPost(false);
+    setSelectedPost(null);
+  };
   const handleEdit = () => setEditOpen(true);
 
-  const handleCloseEdit = () => setEditOpen(false);
+  const handleDelete = (postId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
+    const deleted = deletePostById(postId);
+    if (deleted) {
+      setPhotos((prev) => prev.filter((p) => p.id !== postId));
+      if (selectedPost?.id === postId) handleClosePost();
+    }
+  };
 
+  const handleCloseEdit = () => setEditOpen(false);
   const handleSaveEdit = (updatedPost) => {
-    setPhotos((prev) =>
-      prev.map((p) => (p.id === updatedPost.id ? updatedPost : p))
-    );
+    setPhotos((prev) => prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
     setSelectedPost(updatedPost);
     handleCloseEdit();
   };
@@ -244,12 +256,18 @@ const ProfilePage = () => {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+          sx={{ mt: 1, letterSpacing: 0.5, fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
         >
-          JOINED SEPT 2025 | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + p.likes, 0)} LIKES
+          JOINED{" "}
+          {currentUser?.joinedDate
+            ? new Date(currentUser.joinedDate)
+                .toLocaleDateString("en-US", { month: "short", year: "numeric" })
+                .toUpperCase()
+            : "RECENTLY"}{" "}
+          | {photos.length} PHOTOS | {photos.reduce((acc, p) => acc + (p.likes || 0), 0)} LIKES
         </Typography>
 
-        {/* Responsive Photo Grid */}
+        {/* Photo grid */}
         <Box
           sx={{
             display: "flex",
@@ -264,11 +282,11 @@ const ProfilePage = () => {
           {photos.map((photo) => (
             <Box
               key={photo.id}
-              sx={{ 
-                position: "relative", 
-                width: { xs: 150, sm: 180, md: 200 }, 
-                height: { xs: 150, sm: 180, md: 200 }, 
-                cursor: "pointer" 
+              sx={{
+                position: "relative",
+                width: { xs: 150, sm: 180, md: 200 },
+                height: { xs: 150, sm: 180, md: 200 },
+                cursor: "pointer",
               }}
               onClick={() => handleOpenPost(photo)}
             >
@@ -279,15 +297,11 @@ const ProfilePage = () => {
                   alt={`Photo ${photo.id}`}
                   sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-
-                {/* Hover Overlay */}
+                {/* Hover overlay */}
                 <Box
                   sx={{
                     position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
+                    inset: 0,
                     bgcolor: "rgba(0,0,0,0.5)",
                     color: "white",
                     display: "flex",
@@ -304,7 +318,6 @@ const ProfilePage = () => {
                   <Typography variant="subtitle2">
                     {photo.likes} {photo.likes === 1 ? "like" : "likes"}
                   </Typography>
-
                   <Box sx={{ textAlign: "right" }}>
                     <Button
                       size="small"
@@ -333,6 +346,7 @@ const ProfilePage = () => {
         </Box>
       </Container>
 
+      {/* Modals */}
       <OwnSinglePost
         open={openPost}
         handleClose={handleClosePost}

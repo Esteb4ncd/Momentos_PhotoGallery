@@ -1,9 +1,12 @@
+import { getUserProfileImage } from '../utils/randomUsers';
+
 export const samplePhotos = [
   {
     id: 1,
     src: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=600&fit=crop",
     alt: "Adorable orange tabby cat sitting gracefully",
     username: "sarahwang",
+    pfpUrl: getUserProfileImage('sarahwang'),
     date: "2024-01-15",
     location: "Banff, Alberta"
   },
@@ -12,6 +15,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=600&fit=crop",
     alt: "Cute black and white cat looking at camera",
     username: "estebancd",
+    pfpUrl: getUserProfileImage('estebancd'),
     date: "2024-01-12",
     location: "Tofino, BC"
   },
@@ -20,6 +24,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=600&fit=crop",
     alt: "Fluffy gray cat with beautiful green eyes",
     username: "emmajarnie",
+    pfpUrl: getUserProfileImage('emmajarnie'),
     date: "2024-01-10",
     location: "Vancouver, BC"
   },
@@ -28,6 +33,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=600&fit=crop",
     alt: "Sleepy brown tabby cat curled up",
     username: "kaylaluo",
+    pfpUrl: getUserProfileImage('kaylaluo'),
     date: "2024-01-08",
     location: "Whistler, BC"
   },
@@ -36,6 +42,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=800&h=600&fit=crop",
     alt: "Playful white cat with blue eyes",
     username: "sarahwang",
+    pfpUrl: getUserProfileImage('sarahwang'),
     date: "2024-01-05",
     location: "Death Valley, CA"
   },
@@ -44,6 +51,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=600&fit=crop",
     alt: "Elegant Siamese cat with striking blue eyes",
     username: "estebancd",
+    pfpUrl: getUserProfileImage('estebancd'),
     date: "2024-01-03",
     location: "Gastown, Vancouver"
   },
@@ -52,6 +60,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=600&fit=crop",
     alt: "Adorable kitten playing with yarn",
     username: "emmajarnie",
+    pfpUrl: getUserProfileImage('emmajarnie'),
     date: "2024-01-01",
     location: "Okanagan Lake, BC"
   },
@@ -60,6 +69,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1517331156700-3c241d2b4d83?w=800&h=600&fit=crop",
     alt: "Beautiful Persian cat with long fluffy fur",
     username: "kaylaluo",
+    pfpUrl: getUserProfileImage('kaylaluo'),
     date: "2023-12-28",
     location: "Downtown Vancouver"
   },
@@ -68,6 +78,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=600&fit=crop",
     alt: "Cute Siamese cat with blue eyes",
     username: "sarahwang",
+    pfpUrl: getUserProfileImage('sarahwang'),
     date: "2024-01-20",
     location: "Seattle, WA"
   },
@@ -76,6 +87,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=600&fit=crop",
     alt: "Black and white tuxedo cat",
     username: "estebancd",
+    pfpUrl: getUserProfileImage('estebancd'),
     date: "2024-01-18",
     location: "Portland, OR"
   },
@@ -84,6 +96,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=600&fit=crop",
     alt: "Fluffy gray cat with green eyes",
     username: "emmajarnie",
+    pfpUrl: getUserProfileImage('emmajarnie'),
     date: "2024-01-16",
     location: "San Francisco, CA"
   },
@@ -92,6 +105,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=600&fit=crop",
     alt: "Sleepy brown tabby cat curled up",
     username: "kaylaluo",
+    pfpUrl: getUserProfileImage('kaylaluo'),
     date: "2024-01-14",
     location: "Los Angeles, CA"
   },
@@ -100,6 +114,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=600&fit=crop",
     alt: "Playful white cat with blue eyes",
     username: "sarahwang",
+    pfpUrl: getUserProfileImage('sarahwang'),
     date: "2024-01-12",
     location: "San Diego, CA"
   },
@@ -108,6 +123,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=800&h=600&fit=crop",
     alt: "Adorable kitten playing with yarn",
     username: "estebancd",
+    pfpUrl: getUserProfileImage('estebancd'),
     date: "2024-01-10",
     location: "Phoenix, AZ"
   },
@@ -116,6 +132,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=800&h=600&fit=crop",
     alt: "Elegant Maine Coon cat",
     username: "emmajarnie",
+    pfpUrl: getUserProfileImage('emmajarnie'),
     date: "2024-01-08",
     location: "Denver, CO"
   },
@@ -124,6 +141,7 @@ export const samplePhotos = [
     src: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=600&fit=crop",
     alt: "Beautiful calico cat with unique markings",
     username: "kaylaluo",
+    pfpUrl: getUserProfileImage('kaylaluo'),
     date: "2024-01-06",
     location: "Austin, TX"
   }

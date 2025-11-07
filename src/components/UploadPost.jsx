@@ -10,70 +10,108 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { addPost } from "../utils/posts";
+import { getCurrentUser } from "../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function UploadPost({ handleClose }) {
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [selectedImageFile, setSelectedImageFile] = React.useState(null);
   const [caption, setCaption] = React.useState("");
   const [location, setLocation] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef(null);
+  const navigate = useNavigate();
 
-  const handleImageUpload = (event) => {
+  const compressImage = (file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            if (width > height) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            } else {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImageFile(file);
-      setSelectedImage(URL.createObjectURL(file));
-    }
-  };
-
-  const handlePost = () => {
-    if (!selectedImage) {
-      alert("Please select an image first");
-      return;
-    }
-
-    // Convert image to data URL for storage
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const imageDataUrl = reader.result;
-      
-      // Get user info
-      const username = localStorage.getItem("profileName") || "Me";
-      const pfpUrl = localStorage.getItem("profileImage") || "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg";
-      
-      // Create new post
-      const newPost = {
-        id: Date.now(),
-        src: imageDataUrl,
-        imageUrl: imageDataUrl,
-        username: username,
-        pfpUrl: pfpUrl,
-        caption: caption || "No caption",
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        location: location || "Unknown",
-        likes: 0,
-        comments: [],
-      };
-
-      // Save to localStorage
-      const savedPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
-      savedPosts.push(newPost);
-      localStorage.setItem("userPosts", JSON.stringify(savedPosts));
-
-      // Close modal and refresh if on profile page
-      if (handleClose) {
-        handleClose();
+      try {
+        // Compress image to reduce storage size
+        const compressedDataUrl = await compressImage(file);
+        setSelectedImage(compressedDataUrl);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        // Fallback to original if compression fails
+        setSelectedImage(URL.createObjectURL(file));
       }
-      
-      // Reload the page to show new post (or you could use state management)
-      window.location.reload();
-    };
-    
-    reader.readAsDataURL(selectedImageFile);
+    }
   };
 
   const handleAreaClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handlePost = async () => {
+    if (!selectedImage) {
+      alert("Please select an image first");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const user = getCurrentUser() || { fullName: "Me", id: "guest" };
+      const username = user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
+      const pfpUrl = "https://randomuser.me/api/portraits/men/14.jpg";
+      
+      // Create the post
+      const newPost = addPost({
+        username,
+        pfpUrl,
+        caption: caption || "",
+        location: location || "",
+        imageDataUrl: selectedImage,
+      });
+      
+      // Close the modal first
+      if (handleClose) {
+        handleClose();
+      }
+      
+      // Small delay to ensure modal closes
+      setTimeout(() => {
+        navigate("/profilepage", { state: { newPostId: newPost.id } });
+      }, 100);
+      
+    } catch (error) {
+      console.error("Error posting:", error);
+      setIsSubmitting(false);
+      alert(`Failed to post: ${error.message || "Unknown error. Check console for details."}`);
+    }
   };
 
   return (
@@ -269,13 +307,13 @@ export default function UploadPost({ handleClose }) {
           position: "absolute",
           bottom: { xs: 10, md: 20 },
           right: { xs: 10, md: 20 },
+          zIndex: 10,
         }}
       >
         <Button
           variant="contained"
           color="primary"
-          onClick={handlePost}
-          disabled={!selectedImage}
+          disabled={!selectedImage || isSubmitting}
           sx={{
             px: { xs: 3, md: 4 },
             py: { xs: 1, md: 1.2 },
@@ -288,9 +326,15 @@ export default function UploadPost({ handleClose }) {
               backgroundColor: "rgba(0, 0, 0, 0.12)",
               color: "rgba(0, 0, 0, 0.26)",
             },
+            pointerEvents: "auto",
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handlePost();
           }}
         >
-          Post
+          {isSubmitting ? "Posting..." : "Post"}
         </Button>
       </Box>
     </Container>

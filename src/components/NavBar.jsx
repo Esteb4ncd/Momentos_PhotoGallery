@@ -7,6 +7,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import MenuIcon from '@mui/icons-material/Menu';
 import UploadPostModal from './UploadPostModal';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../utils/auth';
 
 export default function NavBar() {
 // Upload Post Modal Stuff:
@@ -31,6 +32,12 @@ export default function NavBar() {
     };
     const handleUploadClick = () => {
         handleOpen();
+        handleMenuClose();
+    };
+    
+    const handleLogout = () => {
+        logoutUser();
+        navigate('/login');
         handleMenuClose();
     };
 
@@ -108,6 +115,9 @@ export default function NavBar() {
                         </MenuItem>
                         <MenuItem onClick={handleProfileClick}>
                             <Typography sx={{ color: '#4f40b4' }}>Profile</Typography>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>
+                            <Typography sx={{ color: '#4f40b4' }}>Logout</Typography>
                         </MenuItem>
                     </Menu>
                 </Box>
@@ -232,6 +242,36 @@ export default function NavBar() {
                                 }}
                             >
                                 Profile
+                            </Typography>
+                        </Button>
+
+                        {/* Logout */}
+                        <Button 
+                            onClick={handleLogout}
+                            sx= {{
+                            display: "fixed",
+                            flexDirection: "column",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            p: 1,
+                            color: "#4f40b4",
+                            '&:hover': {
+                                backgroundColor: 'rgba(79, 64, 180, 0.8)',
+                                color: 'white',
+                                pointer: 'pointer',
+                                borderRadius: '6px'
+                            },
+                            '&:focus': {
+                                outline: 'none',
+                            }
+                            }}
+                        >
+                            <Typography variant="h6"
+                                sx={{
+                                    fontWeight: 'normal',
+                                }}
+                            >
+                                Logout
                             </Typography>
                         </Button>
                     </ButtonGroup>

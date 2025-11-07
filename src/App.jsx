@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box } from '@mui/material';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Gallery from './pages/Gallery';
 import NavBar from './components/NavBar';
 import ProfilePage from "./pages/ProfilePage";
@@ -35,6 +36,7 @@ function AppContent() {
       {!isLoginPage && <NavBar />}
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/user/:username" element={<UserProfile />} />
