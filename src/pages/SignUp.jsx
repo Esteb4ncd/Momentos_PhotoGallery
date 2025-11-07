@@ -51,7 +51,9 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
+    console.log('Sign up button clicked');
     if (validateForm()) {
+      console.log('Form validation passed');
       setIsLoading(true);
       
       try {
@@ -356,10 +358,15 @@ const SignUp = () => {
           
           {/* Sign Up Button */}
           <Button
+            type="button"
             fullWidth
             variant="contained"
             color="primary"
-            onClick={handleSignUp}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleSignUp();
+            }}
             disabled={isLoading}
             sx={{
               color: 'white',
@@ -399,11 +406,19 @@ const SignUp = () => {
           >
             Already have an account?{' '}
             <Link
-              onClick={() => navigate('/login')}
+              component="button"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/login');
+              }}
               sx={{
                 color: 'black',
                 textDecoration: 'none',
                 cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                font: 'inherit',
                 '&:hover': {
                   textDecoration: 'underline',
                 },

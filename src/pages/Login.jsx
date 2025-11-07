@@ -1,102 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button, CircularProgress } from '@mui/material';
-import { findUser, setCurrentUser } from '../utils/auth';
+import { Container, Typography, Box, Grid, TextField, Checkbox, FormControlLabel, Link, Button } from '@mui/material';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Load saved credentials on component mount
-  useEffect(() => {
-    const savedCredentials = localStorage.getItem('momentosRememberMe');
-    if (savedCredentials) {
-      const { email: savedEmail, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
-      setEmail(savedEmail || '');
-      setRememberMe(savedRememberMe || false);
-    }
-  }, []);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const handleLogin = () => {
+    navigate('/gallery');
   };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!email.trim()) {
-      newErrors.email = 'Email/Username is required';
-    } else if (!validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!password.trim()) {
-      newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleLogin = async () => {
-    if (validateForm()) {
-      setIsLoading(true);
-      
-      try {
-        // Simulate authentication delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Try to find the user
-        const user = findUser(email, password);
-        
-        if (!user) {
-          // Account not found or incorrect password
-          setErrors({ general: 'Account not found. Please check your email and password.' });
-          setIsLoading(false);
-          return;
-        }
-        
-        // Set as current user
-        setCurrentUser(user);
-        
-        // Handle remember me functionality
-        if (rememberMe) {
-          localStorage.setItem('momentosRememberMe', JSON.stringify({
-            email: email,
-            rememberMe: true
-          }));
-        } else {
-          localStorage.removeItem('momentosRememberMe');
-        }
-        
-        console.log('Login successful:', user.fullName);
-        
-        // Navigate to profile page
-        navigate('/profilepage');
-      } catch (error) {
-        console.error('Login error:', error);
-        setErrors({ general: 'Login failed. Please try again.' });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleOpenReset = () => {};
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {/* Left Section - Branding */}
       <Box sx={{ 
         flex: { xs: '0 0 30%', md: '0 0 50%' },
-        //         backgroundImage: 'url(/momentos_loginpic2.jpg)',
         backgroundImage: `url(${import.meta.env.BASE_URL}momentos_loginpic2.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'left center',
@@ -108,8 +25,7 @@ const Login = () => {
       }}>
         <Box sx={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <img 
-src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
-
+            src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             alt="Momentos" 
             style={{ 
               height: 'auto',
@@ -142,7 +58,7 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
         justifyContent: 'center',
         padding: { xs: '40px 20px', sm: '40px 40px', md: '0 60px' }
       }}>
-        <Box sx={{ width: '100%', maxWidth: { xs: '100%', sm: 450, md: 500 }, textAlign: 'center' }}>
+        <Box sx={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
           <Typography 
             variant="h3" 
             component="h1" 
@@ -182,14 +98,10 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             <TextField
               fullWidth
               variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={!!errors.email}
-              helperText={errors.email}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: errors.email ? '1px solid #f44336' : '1px solid black',
+                  border: '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -202,11 +114,6 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: '#f44336',
-                  fontWeight: 'bold',
-                  marginLeft: 0,
                 },
               }}
             />
@@ -227,14 +134,10 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               fullWidth
               type="password"
               variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!errors.password}
-              helperText={errors.password}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
-                  border: errors.password ? '1px solid #f44336' : '1px solid black',
+                  border: '1px solid black',
                   '& fieldset': {
                     border: 'none',
                   },
@@ -247,11 +150,6 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                 },
                 '& .MuiOutlinedInput-input': {
                   padding: '12px 14px',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: '#f44336',
-                  fontWeight: 'bold',
-                  marginLeft: 0,
                 },
               }}
             />
@@ -267,8 +165,6 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
                   sx={{
                     color: 'black',
                     '&.Mui-checked': {
@@ -291,6 +187,7 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               }
             />
             <Link
+              href="#"
               sx={{
                 color: 'black',
                 textDecoration: 'none',
@@ -300,30 +197,10 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
                   textDecoration: 'underline',
                 },
               }}
-              onClick={handleOpenReset}
             >
               Forgot password?
             </Link>
           </Box>
-          
-          {/* General Error Display */}
-          {errors.general && (
-            <Typography 
-              variant="body2" 
-              sx={{ 
-                color: '#f44336',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                mb: 2,
-                p: 1,
-                backgroundColor: '#ffebee',
-                borderRadius: '5px',
-                border: '1px solid #f44336'
-              }}
-            >
-              {errors.general}
-            </Typography>
-          )}
           
           {/* Login Button */}
           <Button
@@ -331,7 +208,6 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
             variant="contained"
             color="primary"
             onClick={handleLogin}
-            disabled={isLoading}
             sx={{
               color: 'white',
               fontWeight: 'bold',
@@ -343,20 +219,9 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
               '&:hover': {
                 backgroundColor: '#3d2f9e',
               },
-              '&:disabled': {
-                backgroundColor: '#cccccc',
-                color: '#666666',
-              },
             }}
           >
-            {isLoading ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CircularProgress size={20} sx={{ color: '#666666' }} />
-                <span>Logging in...</span>
-              </Box>
-            ) : (
-              'LOGIN'
-            )}
+            LOGIN
           </Button>
           
           {/* Sign Up Link */}
@@ -370,10 +235,18 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
           >
             Don't have an account?{' '}
             <Link
-              onClick={() => navigate('/signup')}
+              component="button"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/signup');
+              }}
               sx={{
                 color: 'black',
                 textDecoration: 'none',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                font: 'inherit',
                 cursor: 'pointer',
                 '&:hover': {
                   textDecoration: 'underline',
@@ -386,7 +259,6 @@ src={`${import.meta.env.BASE_URL}Momentos_Wordmark.png`}
         </Box>
       </Box>
     </Box>
-
   );
 };
 

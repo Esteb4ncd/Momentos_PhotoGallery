@@ -88,15 +88,17 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
       open={open}
       onClose={handleClose}
       maxWidth={false}
+      fullScreen={{ xs: true, sm: true, md: false }}
       PaperProps={{
         sx: {
-          width: "80vw",
-          maxWidth: "1000px",
-          borderRadius: 3,
-          maxHeight: "90vh",
+          width: { xs: "100%", sm: "100%", md: "80vw" },
+          maxWidth: { xs: "100%", sm: "100%", md: "1000px" },
+          borderRadius: { xs: 0, sm: 0, md: 3 },
+          maxHeight: { xs: "100vh", sm: "100vh", md: "90vh" },
           display: "flex",
           flexDirection: "column",
           mx: "auto",
+          boxSizing: "border-box",
           overflow: "hidden",
         },
       }}
@@ -151,10 +153,12 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
       <DialogContent
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: { xs: "column-reverse", md: "row" },
           p: 0,
+          boxSizing: "border-box",
+          overflow: "hidden",
           width: "100%",
-          height: "70vh",
+          height: { xs: "100vh", md: "70vh" },
         }}
       >
         {/* Left Side: Info + Comments */}
@@ -215,7 +219,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
 
           {/* Comments */}
           <Box sx={{ flex: 1, overflowY: "auto" }}>
-            {commentsState.map((comment) => (
+            {comments.map((comment) => (
               <Box key={comment.id} sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "flex-start" }}>
                   <Avatar src={comment.pfpUrl} sx={{ mr: 1, width: 30, height: 30 }} />
@@ -285,12 +289,17 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
             justifyContent: "center",
             alignItems: "center",
             overflow: "hidden",
+            minHeight: { xs: "40vh", md: "auto" },
           }}
         >
           <img
             src={post.imageUrl || post.src}
-            alt={post.caption}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            alt={post.caption || "Post image"}
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            onError={(e) => {
+              console.error("Failed to load image:", post.imageUrl || post.src);
+              e.target.style.display = "none";
+            }}
           />
         </Box>
       </DialogContent>

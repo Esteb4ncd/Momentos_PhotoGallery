@@ -26,14 +26,24 @@ const theme = createTheme({
 
 function AppContent() {
   const location = useLocation();
-  // Remove the base path from location.pathname for comparison
-  const pathWithoutBase = location.pathname.replace(import.meta.env.BASE_URL, '') || '/';
-  const isLoginPage = pathWithoutBase === '/login' || pathWithoutBase === '/';
+  // When using basename, location.pathname is already relative to basename
+  // So '/login' will be '/login', not '/Momentos_PhotoGallery/login'
+  const pathname = location.pathname;
+  
+  // Check if we're on login or signup pages (handle both with and without leading slash)
+  const isAuthPage = 
+    pathname === '/login' || 
+    pathname === '/signup' || 
+    pathname === '/' || 
+    pathname === 'login' || 
+    pathname === 'signup' ||
+    pathname.endsWith('/login') || 
+    pathname.endsWith('/signup');
 
   return (
     <>
-      {/* NavBar only shows on non-login pages */}
-      {!isLoginPage && <NavBar />}
+      {/* NavBar only shows on non-auth pages (login/signup) */}
+      {!isAuthPage && <NavBar />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
