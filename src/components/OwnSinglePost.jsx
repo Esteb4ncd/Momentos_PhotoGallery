@@ -150,7 +150,7 @@ export default function OwnSinglePost({ open, handleClose, post, onEdit, profile
             variant="outlined"
             size="small"
             color="error"
-            onClick={onDelete}
+            onClick={() => onDelete(post.id)}
             sx={{
               "&:hover": { backgroundColor: "rgba(211, 47, 47, 0.1)" },
               fontSize: { xs: '0.7rem', md: '0.875rem' },

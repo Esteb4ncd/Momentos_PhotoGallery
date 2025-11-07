@@ -69,7 +69,7 @@ const ProfilePage = () => {
   // Logged-in user's profile image (use state instead of constant)
   const loggedInUserPfpUrl = profileImage;
 
-  // Load photos from localStorage and fetch random dog images if needed
+  // Load photos from localStorage - only show uploaded posts
   useEffect(() => {
     // Get current user to load their posts
     const user = getCurrentUser();
@@ -78,44 +78,21 @@ const ProfilePage = () => {
     // Load saved posts using the posts utility
     const savedPosts = getPostsByUsername(username);
     
-    if (savedPosts.length > 0) {
-      // Use saved posts
-      setPhotos(savedPosts.map(post => ({
-        ...post,
-        pfpUrl: loggedInUserPfpUrl, // Update with current profile image
-      })));
-      
-      // If navigating from upload with a new post ID, open it
-      if (location.state?.newPostId) {
-        const newPost = savedPosts.find(p => p.id === location.state.newPostId);
-        if (newPost) {
-          setSelectedPost({ ...newPost, pfpUrl: loggedInUserPfpUrl });
-          setOpenPost(true);
-          // Clear the state to avoid reopening on re-render
-          window.history.replaceState({}, document.title);
-        }
+    // Only show uploaded posts, no default images
+    setPhotos(savedPosts.map(post => ({
+      ...post,
+      pfpUrl: loggedInUserPfpUrl, // Update with current profile image
+    })));
+    
+    // If navigating from upload with a new post ID, open it
+    if (location.state?.newPostId) {
+      const newPost = savedPosts.find(p => p.id === location.state.newPostId);
+      if (newPost) {
+        setSelectedPost({ ...newPost, pfpUrl: loggedInUserPfpUrl });
+        setOpenPost(true);
+        // Clear the state to avoid reopening on re-render
+        window.history.replaceState({}, document.title);
       }
-    } else {
-      // Fetch random dog images if no saved posts
-      const fetchDogs = async () => {
-        const urls = [];
-        for (let i = 1; i <= 9; i++) {
-          const res = await fetch("https://dog.ceo/api/breeds/image/random");
-          const data = await res.json();
-          urls.push({
-            id: i,
-            src: data.message,
-            username: "Me",
-            pfpUrl: loggedInUserPfpUrl,
-            caption: `Cute dog ${i}`,
-            date: `Oct ${10 - i}, 2025`,
-            location: "Toronto",
-            likes: Math.floor(Math.random() * 10),
-          });
-        }
-        setPhotos(urls);
-      };
-      fetchDogs();
     }
   }, [loggedInUserPfpUrl, location.state]);
 
@@ -130,8 +107,6 @@ const ProfilePage = () => {
   const handleEdit = () => setEditOpen(true);
 
   const handleDelete = (postId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this post?");
-    if (!confirmed) return;
     const deleted = deletePostById(postId);
     if (deleted) {
       setPhotos((prev) => prev.filter((p) => p.id !== postId));
