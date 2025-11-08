@@ -38,7 +38,7 @@ const ProfilePage = () => {
     const [profileImage, setProfileImage] = useState(
         "https://i.ytimg.com/vi/rvX8cS-v2XM/maxresdefault.jpg"
     );
-    const [profileName, setProfileName] = useState("Yo Mama");
+    const [profileName, setProfileName] = useState("Taylor Swift");
     const [profileBio, setProfileBio] = useState("Proud dog lover");
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [editImageUrl, setEditImageUrl] = useState("");
