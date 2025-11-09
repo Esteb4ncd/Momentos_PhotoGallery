@@ -47,22 +47,16 @@ const ProfilePage = () => {
     const [showEditButton, setShowEditButton] = useState(false);
     const profileSectionRef = useRef(null);
 
-    // Hide button when clicking outside profile section
     useEffect(() => {
         // Get current user
         const user = getCurrentUser();
         setCurrentUser(user);
 
-        // Load saved profile customizations from localStorage
         const savedProfileImage = localStorage.getItem("profileImage");
         const savedProfileBio = localStorage.getItem("profileBio");
-
-        // Use user's full name as default, but allow localStorage override if they've customized it
         const savedProfileName = localStorage.getItem("profileName");
 
         if (savedProfileImage) setProfileImage(savedProfileImage);
-
-        // Priority: saved custom name > user's full name > default
         if (savedProfileName) {
             setProfileName(savedProfileName);
         } else if (user?.fullName) {
@@ -97,11 +91,7 @@ const ProfilePage = () => {
         const user = getCurrentUser();
         const username =
             user?.fullName ? user.fullName.split(" ")[0].toLowerCase() : "me";
-
-        // Load saved posts using the posts utility
         const savedPosts = getPostsByUsername(username);
-
-        // Only show uploaded posts, no default images
         setPhotos(
             savedPosts.map((post) => ({
                 ...post,
