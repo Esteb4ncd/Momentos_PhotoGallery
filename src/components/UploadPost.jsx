@@ -20,6 +20,8 @@ export default function UploadPost({ handleClose }) {
   const [caption, setCaption] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [imageError, setImageError] = React.useState(null);
   const fileInputRef = React.useRef(null);
   const navigate = useNavigate();
 
@@ -63,6 +65,21 @@ export default function UploadPost({ handleClose }) {
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setImageError('Please select a valid image file (PNG, JPG, JPEG)');
+        return;
+      }
+      
+      // Validate file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        setImageError('Image size must be less than 10MB. Please choose a smaller image.');
+        return;
+      }
+      
+      setImageError(null);
+      setError(null);
       setSelectedImageFile(file);
       try {
         // Compress image to reduce storage size
@@ -70,8 +87,13 @@ export default function UploadPost({ handleClose }) {
         setSelectedImage(compressedDataUrl);
       } catch (error) {
         console.error("Error processing image:", error);
+        setImageError('Failed to process image. Please try a different image.');
         // Fallback to original if compression fails
-        setSelectedImage(URL.createObjectURL(file));
+        try {
+          setSelectedImage(URL.createObjectURL(file));
+        } catch (fallbackError) {
+          setImageError('Unable to load image. Please try again.');
+        }
       }
     }
   };
@@ -82,10 +104,11 @@ export default function UploadPost({ handleClose }) {
 
   const handlePost = async () => {
     if (!selectedImage) {
-      alert("Please select an image first");
+      setError("Please select an image first");
       return;
     }
     
+    setError(null);
     setIsSubmitting(true);
     
     try {
@@ -116,7 +139,20 @@ export default function UploadPost({ handleClose }) {
     } catch (error) {
       console.error("Error posting:", error);
       setIsSubmitting(false);
-      alert(`Failed to post: ${error.message || "Unknown error. Check console for details."}`);
+      
+      // Handle specific error types
+      let errorMessage = "Failed to post. Please try again.";
+      if (error.message) {
+        if (error.message.includes("Storage quota exceeded") || error.message.includes("QuotaExceededError")) {
+          errorMessage = "Storage quota exceeded. Please delete some posts or clear your browser data to continue.";
+        } else if (error.message.includes("Image data is required")) {
+          errorMessage = "Image data is required. Please select an image.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setError(errorMessage);
     }
   };
 
@@ -227,6 +263,45 @@ export default function UploadPost({ handleClose }) {
             }
           }}
         />
+        
+        {/* Error Messages */}
+        {error && (
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#f44336",
+              fontWeight: "bold",
+              textAlign: "center",
+              mb: 2,
+              p: 1.5,
+              backgroundColor: "#ffebee",
+              borderRadius: "5px",
+              border: "1px solid #f44336",
+              fontSize: { xs: '0.8rem', md: '0.875rem' }
+            }}
+          >
+            {error}
+          </Typography>
+        )}
+        
+        {imageError && (
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#f44336",
+              fontWeight: "bold",
+              textAlign: "center",
+              mb: 2,
+              p: 1.5,
+              backgroundColor: "#ffebee",
+              borderRadius: "5px",
+              border: "1px solid #f44336",
+              fontSize: { xs: '0.8rem', md: '0.875rem' }
+            }}
+          >
+            {imageError}
+          </Typography>
+        )}
       </Box>
 
       {/* RIGHT: Upload Area */}
@@ -281,6 +356,20 @@ export default function UploadPost({ handleClose }) {
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
               PNG, JPG, JPEG — up to 10MB
             </Typography>
+            {imageError && (
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  color: "#f44336", 
+                  fontWeight: "bold",
+                  display: "block",
+                  mt: 1,
+                  fontSize: { xs: '0.7rem', md: '0.75rem' }
+                }}
+              >
+                {imageError}
+              </Typography>
+            )}
           </Box>
         )}
 

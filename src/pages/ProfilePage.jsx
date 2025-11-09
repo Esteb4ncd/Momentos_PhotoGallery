@@ -45,6 +45,7 @@ const ProfilePage = () => {
     const [editName, setEditName] = useState("");
     const [editBio, setEditBio] = useState("");
     const [showEditButton, setShowEditButton] = useState(false);
+    const [profileError, setProfileError] = useState(null);
     const profileSectionRef = useRef(null);
 
     useEffect(() => {
@@ -144,6 +145,7 @@ const ProfilePage = () => {
         setEditImageUrl(profileImage);
         setEditName(profileName);
         setEditBio(profileBio);
+        setProfileError(null);
         setIsEditingProfile(true);
         setShowEditButton(false);
     };
@@ -169,9 +171,18 @@ const ProfilePage = () => {
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
+            setProfileError(null);
+            
             // Check if file is an image
             if (!file.type.startsWith("image/")) {
-                alert("Please select an image file");
+                setProfileError("Please select a valid image file (PNG, JPG, JPEG)");
+                return;
+            }
+            
+            // Validate file size (10MB limit)
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                setProfileError("Image size must be less than 10MB. Please choose a smaller image.");
                 return;
             }
 
@@ -179,6 +190,10 @@ const ProfilePage = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setEditImageUrl(reader.result);
+                setProfileError(null);
+            };
+            reader.onerror = () => {
+                setProfileError("Failed to load image. Please try again.");
             };
             reader.readAsDataURL(file);
         }
@@ -327,6 +342,10 @@ const ProfilePage = () => {
                                     component='img'
                                     image={photo.src}
                                     alt={`Photo ${photo.id}`}
+                                    onError={(e) => {
+                                      // Fallback to a placeholder image if the image fails to load
+                                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
+                                    }}
                                     sx={{
                                         width: "100%",
                                         height: "100%",
@@ -470,6 +489,9 @@ const ProfilePage = () => {
                             <Box sx={{ textAlign: "center" }}>
                                 <Avatar
                                     src={editImageUrl}
+                                    onError={() => {
+                                        setProfileError("Invalid image URL. Please check the URL or upload a file.");
+                                    }}
                                     sx={{
                                         width: 100,
                                         height: 100,
@@ -484,6 +506,25 @@ const ProfilePage = () => {
                                     Preview
                                 </Typography>
                             </Box>
+                        )}
+                        
+                        {/* Error Message */}
+                        {profileError && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "#f44336",
+                                    fontWeight: "bold",
+                                    textAlign: "center",
+                                    mb: 1,
+                                    p: 1.5,
+                                    backgroundColor: "#ffebee",
+                                    borderRadius: "5px",
+                                    border: "1px solid #f44336",
+                                }}
+                            >
+                                {profileError}
+                            </Typography>
                         )}
 
                         {/* Name */}
