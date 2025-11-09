@@ -188,7 +188,7 @@ const ProfilePage = () => {
         <>
             <Container
                 maxWidth='md'
-                sx={{ textAlign: "center", mt: 6, mt: 10, mb: 4 }}
+                sx={{ textAlign: "center", mt: 10, mb: 4 }}
             >
                 <Box ref={profileSectionRef}>
                     <Avatar
