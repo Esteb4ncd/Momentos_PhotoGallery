@@ -49,6 +49,29 @@ const ProfilePage = () => {
 
     // Hide button when clicking outside profile section
     useEffect(() => {
+        // Get current user
+        const user = getCurrentUser();
+        setCurrentUser(user);
+
+        // Load saved profile customizations from localStorage
+        const savedProfileImage = localStorage.getItem("profileImage");
+        const savedProfileBio = localStorage.getItem("profileBio");
+
+        // Use user's full name as default, but allow localStorage override if they've customized it
+        const savedProfileName = localStorage.getItem("profileName");
+
+        if (savedProfileImage) setProfileImage(savedProfileImage);
+
+        // Priority: saved custom name > user's full name > default
+        if (savedProfileName) {
+            setProfileName(savedProfileName);
+        } else if (user?.fullName) {
+            setProfileName(user.fullName);
+        }
+
+        if (savedProfileBio) setProfileBio(savedProfileBio);
+    }, []);
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (
                 showEditButton &&
@@ -64,17 +87,6 @@ const ProfilePage = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [showEditButton]);
-
-    // Load profile data from localStorage on mount
-    useEffect(() => {
-        const savedProfileImage = localStorage.getItem("profileImage");
-        const savedProfileName = localStorage.getItem("profileName");
-        const savedProfileBio = localStorage.getItem("profileBio");
-
-        if (savedProfileImage) setProfileImage(savedProfileImage);
-        if (savedProfileName) setProfileName(savedProfileName);
-        if (savedProfileBio) setProfileBio(savedProfileBio);
-    }, []);
 
     // Logged-in user's profile image (use state instead of constant)
     const loggedInUserPfpUrl = profileImage;
