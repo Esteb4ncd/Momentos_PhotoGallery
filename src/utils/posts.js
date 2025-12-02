@@ -19,6 +19,10 @@ function writeAllPosts(posts) {
   }
 }
 
+export function getAllPosts() {
+  return readAllPosts();
+}
+
 export function getPostsByUsername(username) {
   const posts = readAllPosts();
   return posts.filter(p => p.username === username);
